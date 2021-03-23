@@ -64,6 +64,22 @@ namespace btree
             // create a method to delete the tree from memory
         }
 
+        template<typename Key, typename Data > 
+        typename Btree<Key, Data>::iterator
+        Btree<Key, Data>::begin()
+        {
+            // returns the leftmost node
+        }
+
+        template<typename Key, typename Data > 
+        typename Btree<Key, Data>::const_iterator
+        Btree<Key, Data>::begin()
+        {
+            // returns the (const) leftmost node
+        }
+
+        
+
     }
 
 }
