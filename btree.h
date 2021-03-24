@@ -1,87 +1,63 @@
-#ifndef BTREE_H
-#define BTREE_H
+#ifndef _BTREE_
+#define _BTREE_
 
-#include <sys/types.h>
-#include <iterator>
-#include <iostream>
+#include <iterator> 
 #include <ostream> 
-#include <string> 
+#include <iostream> 
+#include <node.h> 
 
-namespace btree 
+namespace btree
 {
-
-    template< typename Key, typename Data >
-    class BTree 
+    template<typename T>
+    class BTree
     {
-
-        // typedefs for easier reference later
-        typedef Btree<Key, Data> btree_type; 
+        using btree_type = BTree<T>;
         
-        typedef Iterator<Key, Data> iterator; 
-        typedef typename iterator::const_iteartor const_iterator;
-        typedef std::reverse_iterator< const_iterator> const_reverse_iterator; 
-        typedef std::reverse_iterator< iterator > iterator; 
+        private:
+            BNode<T> root; 
+            int m; /* pre-defined degree of tree */ 
+            bool (*compare)(T, T); /* comparative function for tree (as templated) */ 
+            void (*printKey)(T); /* Function used to print items in the tree. */
+        public: 
 
-        /*
-            public methods
-        */
+            Btree( int m ); /* default constructor */
+            Btree( int, bool (*)(T, T), void (*)(T) ); /* constructor with defined type */
+            /* currently missing copy constructor because not relevant */
+            ~Btree( ); /* destructor */ 
+
+            void clear() /* clears the tree */
+            void insert(T); /* inserts a key into the tree */ 
+            T remove(T); /* removes a key from tree */ 
+            BNode<T> search(T); /* returns the node associated with key */
+
+        /* ~~~~~~~~ METHODS ~~~~~~~~~~~ */
+
         public:
-            Btree( ); // constructor
-            Btree( const btree_type &x ); // copy constructor 
-            ~Btree(); // destructor 
+            /* 
+            * default constructor 
+            * creates a null root node + sets m
+            */
+            template <typename T>
+            BTree<T>::BTree(int m) 
+            {   
+                root = NULL; 
+                compare = nullptr; 
+                printKey = nullptr; 
+                m = m; 
+            }
 
-            // iterator method headers
-            iterator begin(); 
-            const_iterator begin() const; 
-            iterator end(); 
-            const_iterator end() const; 
-            reverse_iterator rbegin(); 
-            const_reverse_iterator rbegin() const; 
-            reverse_iterator rend(); 
-            const_reverse_iterator rend() const; 
+            template <typename T>
+            BTree<T>::Btree( int t, bool (*compFunc)(T, T), void (*print)(T) )
+            {
+                m = t;
+                compare = compFunc; 
+                printKey = print; 
+                root = nullptr; 
+            }
 
-            // functionality 
-            void clear();
-            void assign( const btree_type &x );
 
-        // ~~~~~ METHODS ~~~~~
 
-        // default constructor
-        template< typename Key, typename Data >
-        BTree< Key, Data>::Btree(): root(nullptr) {}
-        
-        // copy constructor
-        template< typename Key, typename Data > 
-        BTree< Key, Data >::Btree(const btree_type &x)
-        { 
-            // create a method to copy the tree using an iterator
-        }
-
-        // destructor 
-        template<typename Key, typename Data > 
-        Btree< Key, Data >::~Btree()
-        {
-            // create a method to delete the tree from memory
-        }
-
-        template<typename Key, typename Data > 
-        typename Btree<Key, Data>::iterator
-        Btree<Key, Data>::begin()
-        {
-            // returns the leftmost node
-        }
-
-        template<typename Key, typename Data > 
-        typename Btree<Key, Data>::const_iterator
-        Btree<Key, Data>::begin()
-        {
-            // returns the (const) leftmost node
-        }
-
-        
-
-    }
-
+    }   
 }
 
-#endif
+#endif 

@@ -22,6 +22,8 @@ useful for very large data records
 
 <img src="https://cis.stvincent.edu/html/tutorials/swd/btree/multiway.gif" width="800">
 
+Usually in a database, the Btree would store the (key, index) together with the index pointing to a value in a b+ tree. 
+For this data, we will use a hashmap in the place of b+ tree to store the indexes as a result of a time constraint. (performs the insert/delete in O(1) time and then a search in O(n))
 
 ```
 struct BTreeNode
@@ -32,6 +34,10 @@ struct BTreeNode
 
 }
 ``` 
+
+The BtreeNode has a struct that represents a "key"
+: the key then is of a certain type, which is predefined by a user. 
+
 
 
 

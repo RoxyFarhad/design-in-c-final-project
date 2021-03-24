@@ -2,48 +2,64 @@
 #define BTREE_NODE_H
 
 #include <string>
+#include <vector>
 
-using namespace std; 
+template<typename T>
+struct BNodeKey {
+    T key; /* this is the PK for our db which is why in this struct */ 
+    int index;
+};
+
 namespace btree
 {   
 
-    class Node
+    template<typename T>
+    class BNode
     {
 
+        using BNodeType = BNode<T>; 
+
         public:
-
-            // constructor
-            Node ( ); 
-            ~Node( ) = default; 
-
-            string date; 
-            int temperature;
-
             bool isLeaf; 
-            size_t max_val_count; 
-            size_t min_val_count; 
-            size_t val_count; 
+            int size; /* refers to the number of keys */
+            T minKey; /* smallest value in node */
+            T maxKey; /* largest value in node */
+            std::vector<BNodeKey<T>> keys; 
+            std::vector<BNodeType> children; 
 
-            // initialises the node
-            void init(Node *parent, size_t max_val_count);
+        private:
+            /* pass in these functions because needed for key comparisons */ 
+            bool (*compare)(T, T);
+            void (*printKey)(T);
 
-            // following properties of nodes https://www.programiz.com/dsa/b-tree
-
-
-        // public methods
         public:
+            BNode(bool (*)(T, T), void (*)(T)); /* constructor */ 
+            /* also missing copy constructor because deemed irrelevant */
+            ~BNode( ); /* destructor */
+            void print( );
+        
+        private:
 
-            void Node::init(Node *parent, size_t max_val_count, string date, int temperature)
+            void addKeyToNode(T); 
+            
+        /* ~~~~ Methods ~~~~~ */ 
+        public:
+            /*
+             * default constructor - node with no data
+             */
+            template <typename T>
+            BNode<T>::BNode(bool (*compFunc)(T, T), void (*print)(T))
             {
-                this->isLeaf = true; 
-                this->max_val_count = max_val_count; 
-                this->val_count = 0; 
-                this->parent = parent;
-                this->date = date;
-                this->temperature = temperature; 
+                isLeaf = true;
+                size = 0; 
+                compare = compFunc; 
+                printKey = print; 
+                minKey = NULL; 
+                maxKey = NULL; 
             }
 
-        friend class Btree; 
 
     }   
 }
+
+#endif
