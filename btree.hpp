@@ -28,14 +28,6 @@ class BTree
         void insert(T); /* inserts a key into the tree */ 
         T remove(T); /* removes a key from tree */ 
         //BNode<T> search(T); /* returns the node associated with key */
-
-    /* ~~~~~~~~ METHODS ~~~~~~~~~~~ */
-
-        /* 
-        * default constructor 
-        * creates a null root node + sets m
-        */
-
 };
 
 
