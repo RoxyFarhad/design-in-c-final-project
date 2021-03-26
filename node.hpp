@@ -26,17 +26,17 @@ class BNode
 
     private:
         /* pass in these functions because needed for key comparisons */ 
-        bool (*compare)(T, T);
+        int (*compare)(T, T);
         void (*printKey)(T);
 
     public:
-        BNode(bool (*)(T, T), void (*)(T)); /* constructor */ 
+        BNode(int (*)(T, T), void (*)(T)); /* constructor */ 
         /* also missing copy constructor because deemed irrelevant */
         ~BNode( ); /* destructor */
         void print( );
-    
+        unsigned insertKey(T k, int index); /* inserts the key into node - returns the index of the key in node */
     // private:
-
+ 
     //     void addKeyToNode(T); 
         
     /* ~~~~ Methods ~~~~~ */ 

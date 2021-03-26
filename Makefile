@@ -6,10 +6,10 @@ TARGET = main
 
 all: $(TARGET)
 
-$(TARGET): $(TARGET).o btree.o
+$(TARGET): $(TARGET).o btree.o node.o
 			$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).o btree.o
 
-$(TARGET).o: $(TARGET).cpp btree.hpp
+$(TARGET).o: $(TARGET).cpp btree.hpp node.hpp
 	$(CC) $(CFLAGS) -c $(TARGET).cpp
 
 btree.o: btree.cpp btree.hpp node.o
@@ -17,3 +17,5 @@ btree.o: btree.cpp btree.hpp node.o
 
 node.o: node.hpp
 
+clean:
+	rm -f *~ *.o main

@@ -8,6 +8,8 @@
 - A non leaf node with n-1 keys must have n number of children.
 - All the key values within a node must be in ascending order.
 
+- The root has to have between 1 and 2m elements
+- 
 
 **B-Tree-Node**
 
@@ -35,10 +37,9 @@ struct BTreeNode
 }
 ``` 
 
-The BtreeNode has a struct that represents a "key"
-: the key then is of a certain type, which is predefined by a user. 
-
-
+The BtreeNode has a struct that represents a "key": 
+- the key then is of a certain type, which is predefined by a user. 
+- e.g. could be string for country, or 
 
 
 

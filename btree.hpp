@@ -6,21 +6,24 @@
 #include <iostream> 
 #include "node.hpp"
 
+//TODO : Build iterator to search / print items for checking methods
+
 template<typename T>
 class BTree
 {
     using btree_type = BTree<T>;
     
     private:
-        BNode<T> root; 
+        BNode<T> *root; 
         int m; /* pre-defined degree of tree */ 
-        bool (*compare)(T, T); /* comparative function for tree (as templated) */ 
+        int (*compare)(T, T); /* comparative function for tree (as templated) */ 
         void (*printKey)(T); /* Function used to print items in the tree. */
+        int index; 
     
     public: 
 
         BTree( int m ); /* default constructor */
-        BTree( int, bool (*)(T, T), void (*)(T) ); /* constructor with defined type */
+        BTree( int, int (*)(T, T), void (*)(T) ); /* constructor with defined type */
         /* currently missing copy constructor because not relevant */
         ~BTree( ); /* destructor */ 
 
