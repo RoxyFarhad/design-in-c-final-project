@@ -8,7 +8,7 @@ int compareInt(int a, int b) {
     return a - b; 
 };
 
-void printKey(int key) { cout << key << endl; };
+void printKey(int key) { cout << key; };
 
 int main() {
     int m = 4;

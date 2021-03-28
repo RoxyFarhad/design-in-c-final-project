@@ -23,7 +23,7 @@ class BNode
         int size; /* refers to the number of keys */
         T minKey; /* smallest value in node */
         T maxKey; /* largest value in node */
-        std::vector< BNodeKey<T> > keys; 
+        std::vector< BNodeKey<T> *> *keys; 
         std::vector<BNodeType> children; 
 
     private:

@@ -12,6 +12,17 @@ BNode<T>::BNode(int (*compFunc)(T, T), void (*print)(T))
     printKey = print; 
     minKey = NULL; 
     maxKey = NULL; 
+    std::vector< BNodeKey<T> *> *keys = new std::vector< BNodeKey<T> *>();  
+}
+
+/*
+ * deconstructor
+ */
+
+template <typename T>
+BNode<T>::~BNode*()
+{
+
 }
 
 /*
@@ -20,18 +31,19 @@ BNode<T>::BNode(int (*compFunc)(T, T), void (*print)(T))
 template <typename T>
 unsigned BNode<T>::insertKey(T k, int index)
 {
-    BNodeKey<T> newKey;
-    newKey.key = k; 
-    newKey.index = index; 
+   
+    BNodeKey<int> *newKey = new BNodeKey<int>(); 
+    newKey->key = k; 
+    newKey->index = index; 
     int pos = 0; 
-
+    std::vector< BNodeKey<T> *> *keys = new std::vector< BNodeKey<T> *>;    
     if(this->size == 0) {
-        keys.push_back(newKey);
-        this->size+=1; 
+       this->keys->push_back(newKey);
     } else {
-        typename std::vector< BNodeKey<T> >::iterator it = this->keys.begin();
+       /*
+	 typename std::vector< BNodeKey<T> *>::iterator it = this->keys->begin();
         
-        while(it != this->keys.end() && compare(k, (*it).key)) 
+        while(it != this->keys->end() && compare(k, (*it).key)) 
         {
             pos++;
             it++; 
@@ -39,11 +51,13 @@ unsigned BNode<T>::insertKey(T k, int index)
         std::cout << pos << std::endl; 
 
         // add the key
-        keys.insert(it, newKey);
+        this->keys->insert(it, newKey);
+    	*/
     }
     
     this->size+=1; 
     return pos;
+  
 }
 
 /*
@@ -53,9 +67,13 @@ template <typename T>
 void BNode<T>::print()
 {
     std::cout << "Node values: ";
+/*
     for(auto it = keys.begin(); it != keys.end(); it++) {
-        std::cout << "(" << printKey((*it).key) << ", " << (*it).index << "), ";
+        std::cout << "(";
+	printKey((*it).key); 
+	std::cout << ", " << (*it).index << "), ";
     }
+*/  
     std::cout << std::endl;
 }
 
