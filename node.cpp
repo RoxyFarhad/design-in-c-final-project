@@ -38,7 +38,7 @@ template <typename T>
 unsigned BNode<T>::insertKey(T k, int index)
 {
    
-    BNodeKey<int> *newKey = new BNodeKey<int>(); 
+    BNodeKey<T> *newKey = new BNodeKey<T>(); 
     newKey->key = k; 
     newKey->index = index; 
     int pos = 0; 
@@ -47,7 +47,12 @@ unsigned BNode<T>::insertKey(T k, int index)
        this->keys->push_back(newKey);
     } else {
 
-
+        auto it = this->keys->begin(); 
+        while(it != this->keys->end()) {
+            BNodeKey<T> *bKey = *it;
+            std::cout << bKey->index << std::endl;
+            it++; 
+        }
        /*
 	 typename std::vector< BNodeKey<T> *>::iterator it = this->keys->begin();
         

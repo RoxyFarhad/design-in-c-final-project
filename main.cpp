@@ -16,5 +16,6 @@ int main() {
 
     int testKey = 50;
     btree.insert(testKey);
+    btree.insert(60);
     return 0;
 }

@@ -9,7 +9,8 @@
 - All the key values within a node must be in ascending order.
 
 - The root has to have between 1 and 2m elements
-- 
+- Non-root nodes are m and 2m elements
+
 
 **B-Tree-Node**
 

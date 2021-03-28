@@ -49,7 +49,7 @@ void BTree<T>::insert(T key)
    	
     } 
     else {	
-	root->insertKey(key, ind); 
+	    root->insertKey(key, ind); 
     }
 
 }
