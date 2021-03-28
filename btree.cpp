@@ -38,13 +38,20 @@ template <typename T>
 void BTree<T>::insert(T key) 
 {   
     
-    int ind = this->index + 1; 
     this->index+=1; 
+    int ind = this->index;
     if(this->root == nullptr) {
         root = (BNode<T>*)(this->m, &(this->compare), &(this->printKey));
         root->insertKey(key, ind);
-     //   root->print();
     }
+    // if the root is full
+    else if(this->root->size == 2 * m - 1){
+   	
+    } 
+    else {	
+	root->insertKey(key, ind); 
+    }
+
 }
 
 template <typename T>

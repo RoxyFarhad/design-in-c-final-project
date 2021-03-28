@@ -62,7 +62,7 @@ unsigned BNode<T>::insertKey(T k, int index)
         this->keys->insert(it, newKey);
     	*/
     }
-    this->print(); 
+//    this->print(); 
     this->size+=1; 
     return pos;
   
