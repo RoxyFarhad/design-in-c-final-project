@@ -22,8 +22,6 @@ class BNode
         bool isLeaf; 
         int m; /* order of the tree */
         int size; /* refers to the number of keys */
-        T minKey; /* smallest value in node */
-        T maxKey; /* largest value in node */
         std::vector< BNodeKey<T> *> *keys; 
         std::vector<BNodeType> children; 
 

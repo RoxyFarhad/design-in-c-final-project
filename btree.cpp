@@ -13,11 +13,11 @@ BTree<T>::BTree(int m)
 template <typename T>   
 BTree<T>::BTree( int t, int (*compFunc)(T, T), void (*print)(T) )
 {
-    m = t;
-    compare = compFunc; 
-    printKey = print; 
-    root = nullptr;
-    index = 0; 
+    this->m = t;
+    this->compare = compFunc; 
+    this->printKey = print; 
+    this->root = nullptr;
+    this->index = 0; 
 }
 
 template <typename T>
@@ -41,8 +41,8 @@ void BTree<T>::insert(T key)
     this->index+=1; 
     int ind = this->index;
     if(this->root == nullptr) {
-        root = (BNode<T>*)(this->m, &(this->compare), &(this->printKey));
-        root->insertKey(key, ind);
+        this->root = new BNode<T>(m, compare, printKey);  
+	this->root->insertKey(key, ind);
     }
     // if the root is full
     else if(this->root->size == 2 * m - 1){
