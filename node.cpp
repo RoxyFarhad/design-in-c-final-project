@@ -23,7 +23,7 @@ BNode<T>::BNode(int m, int (*compFunc)(T, T), void (*print)(T))
 template <typename T>
 BNode<T>::~BNode()
 {
-    for(auto it = keys->begin(); it != keys->end(); it++) 
+    for(auto it = this->keys->begin(); it != this->keys->end(); it++) 
     {
         // delete each node value from memory
         delete this->keys(*it);
@@ -47,7 +47,7 @@ unsigned BNode<T>::insertKey(T k, int index)
        this->keys->push_back(newKey);
     } else {
 
-        auto it = this->keys->begin(); 
+        typename std::vector< BNodeKey<T> *>::iterator it = this->keys->begin(); 
         while(it != this->keys->end()) {
             BNodeKey<T> *bKey = *it;
             std::cout << bKey->index << std::endl;
