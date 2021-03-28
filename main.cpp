@@ -11,11 +11,13 @@ int compareInt(int a, int b) {
 void printKey(int key) { cout << key; };
 
 int main() {
-    int m = 4;
+    int m = 2;
     BTree<int> btree(m, &compareInt, &printKey);
 
     int testKey = 50;
     btree.insert(testKey);
     btree.insert(60);
+    btree.insert(70);
+    btree.insert(80);
     return 0;
 }

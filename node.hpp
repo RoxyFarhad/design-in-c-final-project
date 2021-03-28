@@ -23,7 +23,9 @@ class BNode
         int m; /* order of the tree */
         int size; /* refers to the number of keys */
         std::vector< BNodeKey<T> *> *keys; 
-        std::vector<BNodeType> children; 
+        std::vector<BNodeType *> *children; 
+        int minKeys;
+        int maxKeys;
 
     private:
         /* pass in these functions because needed for key comparisons */ 
@@ -36,12 +38,9 @@ class BNode
         ~BNode( ); /* destructor */
         void print( );
         unsigned insertKey(T k, int index); /* inserts the key into node - returns the index of the key in node */
-    // private:
- 
-    //     void addKeyToNode(T); 
-        
-    /* ~~~~ Methods ~~~~~ */ 
-
+        unsigned insertChild(BNodeType *x); 
+        void removeKey(int i, int j); 
+        void removeChild(int i, int j);
 };
 
 #endif

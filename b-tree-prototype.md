@@ -8,7 +8,7 @@
 - A non leaf node with n-1 keys must have n number of children.
 - All the key values within a node must be in ascending order.
 
-- The root has to have between 1 and 2m elements
+- The root has to have between 1 and 2m-1 elements
 - Non-root nodes are m and 2m elements
 
 
@@ -43,6 +43,13 @@ The BtreeNode has a struct that represents a "key":
 - e.g. could be string for country, or 
 
 
+Insert function:
+1. if the root is full:
+        1. create a new node and make that the root 
+        2. new node is not a leaf
+        3. root node is currently the child of new node 
+        -> then have to split the node
+        
 
 
 
