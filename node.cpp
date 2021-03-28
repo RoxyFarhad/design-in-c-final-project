@@ -54,7 +54,7 @@ void BNode<T>::print()
 {
     std::cout << "Node values: ";
     for(auto it = keys.begin(); it != keys.end(); it++) {
-        std::cout << "(" << printKey((*it).key) << ", " << (*it).key << "), ";
+        std::cout << "(" << printKey((*it).key) << ", " << (*it).index << "), ";
     }
     std::cout << std::endl;
 }
