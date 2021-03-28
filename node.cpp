@@ -4,7 +4,7 @@
  * default constructor - node with no data
  */
 template <typename T>
-BNode<T>::BNode(int (*compFunc)(T, T), void (*print)(T))
+BNode<T>::BNode(int m, int (*compFunc)(T, T), void (*print)(T))
 {
     isLeaf = true;
     size = 0; 
@@ -13,16 +13,22 @@ BNode<T>::BNode(int (*compFunc)(T, T), void (*print)(T))
     minKey = NULL; 
     maxKey = NULL; 
     std::vector< BNodeKey<T> *> *keys = new std::vector< BNodeKey<T> *>();  
+    this->m = m; 
 }
 
 /*
- * deconstructor
+ * deconstructor - iterate through all the 
  */
 
 template <typename T>
-BNode<T>::~BNode*()
+BNode<T>::~BNode()
 {
-
+    for(auto it = keys->begin(); it != keys->end(); it++) 
+    {
+        // delete each node value from memory
+        delete this->keys(*it);
+    }
+    delete this->keys; 
 }
 
 /*
@@ -36,10 +42,12 @@ unsigned BNode<T>::insertKey(T k, int index)
     newKey->key = k; 
     newKey->index = index; 
     int pos = 0; 
-    std::vector< BNodeKey<T> *> *keys = new std::vector< BNodeKey<T> *>;    
+
     if(this->size == 0) {
        this->keys->push_back(newKey);
     } else {
+
+
        /*
 	 typename std::vector< BNodeKey<T> *>::iterator it = this->keys->begin();
         
@@ -54,7 +62,7 @@ unsigned BNode<T>::insertKey(T k, int index)
         this->keys->insert(it, newKey);
     	*/
     }
-    
+    this->print(); 
     this->size+=1; 
     return pos;
   
@@ -67,13 +75,13 @@ template <typename T>
 void BNode<T>::print()
 {
     std::cout << "Node values: ";
-/*
-    for(auto it = keys.begin(); it != keys.end(); it++) {
+
+    for(auto it = keys->begin(); it != keys->end(); it++) {
         std::cout << "(";
-	printKey((*it).key); 
-	std::cout << ", " << (*it).index << "), ";
+	printKey((*it)->key); 
+	std::cout << ", " << (*it)->index << "), ";
     }
-*/  
+  
     std::cout << std::endl;
 }
 

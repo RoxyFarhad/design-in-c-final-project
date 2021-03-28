@@ -41,7 +41,7 @@ void BTree<T>::insert(T key)
     int ind = this->index + 1; 
     this->index+=1; 
     if(this->root == nullptr) {
-        root = (BNode<T>*)(&(this->compare), &(this->printKey));
+        root = (BNode<T>*)(this->m, &(this->compare), &(this->printKey));
         root->insertKey(key, ind);
      //   root->print();
     }

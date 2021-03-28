@@ -20,6 +20,7 @@ class BNode
 
     public:
         bool isLeaf; 
+        int m; /* order of the tree */
         int size; /* refers to the number of keys */
         T minKey; /* smallest value in node */
         T maxKey; /* largest value in node */
@@ -32,7 +33,7 @@ class BNode
         void (*printKey)(T);
 
     public:
-        BNode(int (*)(T, T), void (*)(T)); /* constructor */ 
+        BNode(int m, int (*)(T, T), void (*)(T)); /* constructor */ 
         /* also missing copy constructor because deemed irrelevant */
         ~BNode( ); /* destructor */
         void print( );
