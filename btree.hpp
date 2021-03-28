@@ -4,7 +4,7 @@
 #include <iterator> 
 #include <ostream> 
 #include <iostream> 
-#include "node.hpp"
+#include "node.cpp"
 
 //TODO : Build iterator to search / print items for checking methods
 

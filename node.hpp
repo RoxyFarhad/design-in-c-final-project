@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include <ostream> 
+#include <iostream> 
 
 template<typename T>
 struct BNodeKey {
