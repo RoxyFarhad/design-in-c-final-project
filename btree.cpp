@@ -152,7 +152,6 @@ template <typename T>
 void BTree<T>::traverse(BNode<T> *curr)
 {
     int ind = 0; 
-    curr->print(); 
     while(ind < curr->keys->size()) 
     {
 
