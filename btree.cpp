@@ -55,7 +55,7 @@ void BTree<T>::splitChild(BNode<T> *x, int i)
     int childCount = 0; 
     if(!toSplit->isLeaf) {
         for(int i = 0; i < this->m; i++) {
-            BNode<T> *curr = toSplit->keys->at(i + this->m);
+            BNode<T> *curr = toSplit->children->at(i + this->m);
             newNode->children->push_back(curr); 
             childCount += 1; 
         }
@@ -63,15 +63,26 @@ void BTree<T>::splitChild(BNode<T> *x, int i)
     
     toSplit->maxKeys = this->m - 1; 
 
-    // insert the middle key of 
-    x->insertKey(toSplit->keys->at(this->m - 1));
+    // insert the middle key of toSplit to the node that was split
+    x->keys->push_back(toSplit->keys->at(this->m - 1));
 
     // have to remove the keys / children from the node that we copied from
-    toSplit->removeKey(this->m, keyCount + this->m);
-    toSplit->removeKey(this->m, childCount + this->m);
+    toSplit->removeKey(this->m-1, keyCount + this->m);
+    toSplit->removeChild(this->m, childCount + this->m);
 
     // add the new node to the parent
     x->insertChild(newNode);
+
+    // std::cout << "x: ";
+    // x->print();
+    // std::cout << "\n";
+    // std::cout << "toSplit: ";
+    // toSplit->print();
+    // std::cout << "\n";
+    // std::cout << "newNode: ";
+    // newNode->print(); 
+    // std::cout << "\n";
+
 }
 
 /*
@@ -83,14 +94,13 @@ void BTree<T>::insert(T key)
     
     this->index+=1; 
     int ind = this->index;
+
     if(this->root == nullptr) {
-        this->root = new BNode<T>(m, compare, printKey);  
-	    this->root->insertKey(key, ind);
+        this->root = new BNode<T>(m, compare, printKey); 
     }
     // if the root is full
-    else if(this->root->size == 2 * m - 1){
+    else if(this->root->keys->size() == 2 * m - 1){
         BNode<T> *node = new BNode<T>(m, compare, printKey); 
-        
         int pos = node->insertChild(root);
         node->isLeaf = false; 
         splitChild(node, pos); 
@@ -101,19 +111,32 @@ void BTree<T>::insert(T key)
 
     while(!curr->isLeaf) {
 
-        int keyInd = 0; 
-        auto it = this->keys->begin();
-        while(it != this->keys->end() && compare(k, (*it)->key) > 0) {
-            it++;
-            keyInd += 1
+        int keyInd = curr->keys->size() - 1; 
+        while(keyInd >= 0 && (compare(key, curr->keys->at(keyInd)->key) < 0)) {
+            std::cout << curr->keys->at(keyInd)->key << ", " << key << std::endl;
+            keyInd--; 
         }
+        // keyInd is place where K is greater than key -> insert key in place after that
+        keyInd += 1; 
 
-        if(curr->)
+        // check if the current child is full
+        if(curr->children->at(keyInd)->keys->size() == 2 * m - 1){
+
+            // split the child of curr
+            splitChild(curr, keyInd);
+
+            // after split figure out where to put the new key
+            if(compare(curr->keys->at(keyInd)->key, key)) {
+                keyInd++;
+            }
+
+            // at this point keyInd points to index where k > keys[keyInd]
+        }
+        curr = curr->children->at(keyInd);
 
     }
-    
-    curr->insertKey(key, ind); 
 
+    curr->insertKey(key, ind); 
 }
 
 template <typename T>
@@ -122,12 +145,32 @@ T BTree<T>::remove(T key)
     return key; 
 }
 
-template <typename T> 
-void BTree<T>::insertNonFull() 
+template <typename T>
+void BTree<T>::traverse() { traverse(this->root); }
+
+template <typename T>
+void BTree<T>::traverse(BNode<T> *curr)
 {
+    int ind = 0; 
+    curr->print(); 
+    while(ind < curr->keys->size()) 
+    {
 
+        if(curr->isLeaf == false) {
+            // traverse the children in order
+            traverse(curr->children->at(ind));
+        }
+        std::cout << "(";
+        printKey(curr->keys->at(ind)->key);
+        std::cout << ", " << curr->keys->at(ind)->index << ")" << std::endl;
+        ind++; 
+    };  
+
+    if(curr->isLeaf == false) {
+        // traverse the last child
+        traverse(curr->children->at(ind));
+    }
 }
-
 
 /*
 template <typename T>

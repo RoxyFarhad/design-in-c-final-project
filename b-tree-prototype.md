@@ -51,8 +51,7 @@ Insert function:
         -> then have to split the node
         
 
-
-
+- looking at underlying datastructures in the container and see how by changing the structure it affects the runtime of the methods: INSERT, SELECT, REMOVE
 
 
 

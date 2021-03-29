@@ -14,10 +14,10 @@ int main() {
     int m = 2;
     BTree<int> btree(m, &compareInt, &printKey);
 
-    int testKey = 50;
-    btree.insert(testKey);
-    btree.insert(60);
-    btree.insert(70);
-    btree.insert(80);
+    for(int i = 1; i < 15; i++)
+    {
+        btree.insert(i);
+    }
+    btree.traverse(); 
     return 0;
 }

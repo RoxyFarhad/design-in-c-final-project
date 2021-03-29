@@ -31,11 +31,12 @@ class BTree
         void insert(T); /* inserts a key into the tree */ 
         T remove(T); /* removes a key from tree */ 
         //BNode<T> search(T); /* returns the node associated with key */
-
-    private:
-        void insertNonFull();
-        void splitChild(BNode<T> *x, int i); 
+        void traverse(); 
         
+    private:
+        void splitChild(BNode<T> *x, int i); 
+        void traverse(BNode<T> *curr); /* traverses the tree */
+
 };
 
 
