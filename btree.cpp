@@ -23,12 +23,13 @@ BTree<T>::BTree( int t, int (*compFunc)(T, T), void (*print)(T) )
 template <typename T>
 BTree<T>::~BTree() {
     // have to go through all the nodes and delete them
+    delete this; 
 }
 
 template <typename T>
 void BTree<T>::clear()
 {
-
+    
 }
 
 /*
@@ -171,10 +172,34 @@ void BTree<T>::traverse(BNode<T> *curr)
     }
 }
 
-/*
-template <typename T>
-BNode<T> BTree<T>::search(T key)
-{
 
+template <typename T>
+BNodeKey<T>* BTree<T>::search(T key)
+{
+    BNode<T> *curr = root; 
+
+    while(true) {
+
+        int i = 0; 
+        while ( i < curr->keys->size() && (compare(key, curr->keys->at(i)->key) > 0) ){
+            i++;
+        }
+        
+        if( i < curr->keys->size() && compare(key, curr->keys->at(i)->key) == 0 ) {
+            // found the key
+            return curr->keys->at(i);
+        }
+
+        else if(curr->isLeaf) {
+            return nullptr; 
+        }
+        
+        else {
+            curr = curr->children->at(i);
+        }
+    }
 }
-*/
+
+
+
+

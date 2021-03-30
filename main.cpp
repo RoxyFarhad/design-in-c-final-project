@@ -18,6 +18,6 @@ int main() {
     {
         btree.insert(i);
     }
-    btree.traverse(); 
+    btree.search(10);
     return 0;
 }

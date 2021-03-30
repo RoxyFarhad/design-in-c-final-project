@@ -30,8 +30,9 @@ class BTree
         void clear(); /* clears the tree */
         void insert(T); /* inserts a key into the tree */ 
         T remove(T); /* removes a key from tree */ 
-        //BNode<T> search(T); /* returns the node associated with key */
-        void traverse(); 
+        BNodeKey<T>* search(T); /* returns the node associated with key */
+        void traverse(); /* traverses the tree */
+        std::vector<BNodeKey<T>*> searchRange(T lowKey, T highKey); /* finds values in a range */
         
     private:
         void splitChild(BNode<T> *x, int i); 
