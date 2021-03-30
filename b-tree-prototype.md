@@ -1,12 +1,12 @@
 
-**Properties of B-Tree**
-- B-Tree of Order m has the following properties:
-- All the leaf nodes must be at same level.
-- All nodes except root must have at least [m/2]-1 keys and maximum of m-1 keys.
-- All non leaf nodes except root (i.e. all internal nodes) must have at least m/2 children.
-- If the root node is a non leaf node, then it must have at least 2 children.
-- A non leaf node with n-1 keys must have n number of children.
-- All the key values within a node must be in ascending order.
+**Properties of B-Tree**\
+B-Tree of Order m has the following properties:
+- Property #1 - All the leaf nodes must be at same level.
+- Property #2 - All nodes except root must have at least [m/2]-1 keys and maximum of m-1 keys.
+- Property #3 - All non leaf nodes except root (i.e. all internal nodes) must have at least m/2 children.
+- Property #4 - If the root node is a non leaf node, then it must have at least 2 children.
+- Property #5 A non leaf node with n-1 keys must have n number of children.
+- Property #6 -All the key values within a node must be in ascending order.
 
 - The root has to have between 1 and 2m-1 elements
 - Non-root nodes are m and 2m elements
