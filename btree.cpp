@@ -1,4 +1,6 @@
 #include "btree.hpp"
+#include <math.h> 
+#include <algorithm>
 
 template <typename T>
 BTree<T>::BTree(int m) 
@@ -113,7 +115,7 @@ void BTree<T>::insert(T key)
 
         int keyInd = curr->keys->size() - 1; 
         while(keyInd >= 0 && (compare(key, curr->keys->at(keyInd)->key) < 0)) {
-            std::cout << curr->keys->at(keyInd)->key << ", " << key << std::endl;
+            // std::cout << curr->keys->at(keyInd)->key << ", " << key << std::endl;
             keyInd--; 
         }
         // keyInd is place where K is greater than key -> insert key in place after that
@@ -146,7 +148,10 @@ T BTree<T>::remove(T key)
 }
 
 template <typename T>
-void BTree<T>::traverse() { traverse(this->root); }
+void BTree<T>::traverse() 
+{ 
+    traverse(this->root); 
+}
 
 template <typename T>
 void BTree<T>::traverse(BNode<T> *curr)
@@ -154,20 +159,53 @@ void BTree<T>::traverse(BNode<T> *curr)
     int ind = 0; 
     while(ind < curr->keys->size()) 
     {
-
+        
         if(curr->isLeaf == false) {
+            // all non leaf nodes except root must have at least m/2 children
+            if(curr != root) {
+            assert(curr->children->size() >= m / 2);
+            }
+
+            // a non leafnode with n-1 keys must have n number of children
+            assert(curr->children->size() == curr->keys->size() + 1);
+
             // traverse the children in order
             traverse(curr->children->at(ind));
         }
         std::cout << "(";
         printKey(curr->keys->at(ind)->key);
         std::cout << ", " << curr->keys->at(ind)->index << ")" << std::endl;
-        ind++; 
+        ind++;
+
+        // every node has at most m children
+        assert(curr->children->size() <= m);
+
+        // all nodes except root must have at least ceil m/2-1 keys and max m-1 keys
+        if(curr != root) {
+            // std::cout << "size: " << curr->keys->size() << std::endl;
+            // assert(curr->keys->size() >= ceil(m/2)-1); //  && curr->keys->size() <= m-1
+            assert(curr->keys->size() >= ceil(m / 2) - 1 && curr->keys->size() <= 2 * m);
+        };
+
+        // the root has between 1 and 2m-1 keys
+        assert(root->keys->size() >= 1 && root->keys->size() <= 2 * m - 1);
+
+        // if root node is non leaf node, then is must have at least 2 children
+        if(root->isLeaf == false){
+            assert(root->children->size() >= 2);
+        };
+
+        // all key values are in ascending order
+        int last = curr->keys->at(0)->key;
+        for(int i = 1; i<curr->keys->size(); ++i)
+            assert(last <= curr->keys->at(i)->key);
+        
     };  
 
     if(curr->isLeaf == false) {
         // traverse the last child
         traverse(curr->children->at(ind));
+        
     }
 }
 
