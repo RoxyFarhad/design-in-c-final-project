@@ -11,13 +11,22 @@ int compareInt(int a, int b) {
 void printKey(int key) { cout << key; };
 
 int main() {
-    int m = 2;
+    int m = 5;
     BTree<int> btree(m, &compareInt, &printKey);
 
-    for(int i = 1; i < 15; i++)
+    // insert elements in ascending order
+    for(int i = 1; i < 10000; i++)
     {
         btree.insert(i);
     }
     btree.traverse(); 
+
+    // insert elements in descending order
+    // for(int i = 40; i > 0; i--)
+    // {
+    //     btree.insert(i);
+    // }
+    // btree.traverse(); 
+
     return 0;
 }
