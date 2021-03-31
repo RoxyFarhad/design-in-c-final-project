@@ -34,10 +34,13 @@ class BTree
         void traverse(); /* traverses the tree */
         std::vector<BNodeKey<T>*> searchRange(T lowKey, T highKey); /* finds values in a range */
         BNode<T>* getNode(T); /* returns the node associated with the key */
+        // void deleteNode(BNode<T> *curr, T key);
+
     private:
         void splitChild(BNode<T> *x, int i); 
         void traverse(BNode<T> *curr); /* traverses the tree */
-        void deleteNode(BNode<T> *node, T key);
+        // void deleteNode(BNode<T> *curr, T key);
+        
 
 
 };

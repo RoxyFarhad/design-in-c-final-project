@@ -22,9 +22,11 @@ int main() {
 
     btree.traverse();
 
-    btree.remove(1);
+    btree.remove(40);
 
     btree.traverse();
+
+
     
     // cout << btree.search(1);
 

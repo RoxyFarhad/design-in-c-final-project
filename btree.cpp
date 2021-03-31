@@ -145,37 +145,51 @@ template <typename T>
 void BTree<T>::remove(T key)
 {
 
-    BNode<T> *curr = root;
+    BNode<T> *curr = getNode(key);
 
-    //find if the node is in the tree and index of the node
-    // auto curr = search(key);
-
-    curr = getNode(key);
-
-    // if a leaf node, delete key
+    // If the key k is in node x and x is a leaf node
     if(curr->children->size() == 0){
         std::cout<< "isLeaf";
-        deleteNode(curr, key);
-
-    }
-
-}
-
-// Deletes the indexth element from x->key.
-// Returns deleted key.
-template <typename T>
-void deleteNode(BNode<T> *curr, T key) 
-{
-    int i = 0; 
+        curr->print();
+        int i = 0; 
         while ( i < curr->keys->size() && (compare(key, curr->keys->at(i)->key) > 0) ){
             i++;
         }   
         if( i < curr->keys->size() && compare(key, curr->keys->at(i)->key) == 0 ) {
-            curr->keys->erase(curr->keys->at(i)->key);
-            
+            curr->keys->erase(curr->keys->begin() + i);   
         }
-}
+    }
+    // If the key k is in node x and x is an internal node
+    else {
 
+        	BNode<T> *leftChild = curr->child[i];
+			BNode<T> *rightChild = curr->child[i + 1];
+
+            if(leftChild->size() > m){
+                
+            }
+
+
+    }
+
+
+
+
+//     a) If the child y that precedes k in node x has at least t keys, then find the predecessor k0 of k in the sub-tree rooted at y. Recursively delete k0, and replace k by k0 in x. (We can find k0 and delete it in a single downward pass.)
+
+//     b) If y has fewer than t keys, then, symmetrically, examine the child z that follows k in node x. If z has at least t keys, then find the successor k0 of k in the subtree rooted at z. Recursively delete k0, and replace k by k0 in x. (We can find k0 and delete it in a single downward pass.)
+
+//      c) Otherwise, if both y and z have only t-1 keys, merge k and all of z into y, so that x loses both k and the pointer to z, and y now contains 2t-1 keys. Then free z and recursively delete k from y.
+
+
+
+// 3. If the key k is not present in internal node x, determine the root x.c(i) of the appropriate subtree that must contain k, if k is in the tree at all. If x.c(i) has only t-1 keys, execute step 3a or 3b as necessary to guarantee that we descend to a node containing at least t keys. Then finish by recursing on the appropriate child of x.
+
+//     a) If x.c(i) has only t-1 keys but has an immediate sibling with at least t keys, give x.c(i) an extra key by moving a key from x down into x.c(i), moving a key from x.c(i) ’s immediate left or right sibling up into x, and moving the appropriate child pointer from the sibling into x.c(i).
+
+//     b) If x.c(i) and both of x.c(i)’s immediate siblings have t-1 keys, merge x.c(i) with one sibling, which involves moving a key from x down into the new merged node to become the median key for that node.
+
+}
 
 template <typename T>
 void BTree<T>::traverse() { traverse(this->root); }
@@ -192,9 +206,9 @@ void BTree<T>::traverse(BNode<T> *curr)
             traverse(curr->children->at(ind));
         }
         
-        if(curr->isLeaf == true){
-            std::cout << "isLeaf";
-            curr->print();
+        if(curr->isLeaf == true) {
+            // traverse the children in order
+            std::cout << "isLeaf: " ;
         }
 
         std::cout << "(";
@@ -202,6 +216,11 @@ void BTree<T>::traverse(BNode<T> *curr)
         std::cout << ", " << curr->keys->at(ind)->index << ")" << std::endl;
         ind++; 
     };  
+
+    if(curr->isLeaf == false) {
+        // traverse the children in order
+        traverse(curr->children->at(ind));
+    }
 
 }
 
