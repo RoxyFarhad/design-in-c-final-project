@@ -129,6 +129,7 @@ void BTree<T>::insert(T key)
             // after split figure out where to put the new key
             if(compare(curr->keys->at(keyInd)->key, key)) {
                 keyInd++;
+
             }
 
             // at this point keyInd points to index where k > keys[keyInd]
@@ -141,10 +142,40 @@ void BTree<T>::insert(T key)
 }
 
 template <typename T>
-T BTree<T>::remove(T key)
+void BTree<T>::remove(T key)
 {
-    return key; 
+
+    BNode<T> *curr = root;
+
+    //find if the node is in the tree and index of the node
+    // auto curr = search(key);
+
+    curr = getNode(key);
+
+    // if a leaf node, delete key
+    if(curr->children->size() == 0){
+        std::cout<< "isLeaf";
+        deleteNode(curr, key);
+
+    }
+
 }
+
+// Deletes the indexth element from x->key.
+// Returns deleted key.
+template <typename T>
+void deleteNode(BNode<T> *curr, T key) 
+{
+    int i = 0; 
+        while ( i < curr->keys->size() && (compare(key, curr->keys->at(i)->key) > 0) ){
+            i++;
+        }   
+        if( i < curr->keys->size() && compare(key, curr->keys->at(i)->key) == 0 ) {
+            curr->keys->erase(curr->keys->at(i)->key);
+            
+        }
+}
+
 
 template <typename T>
 void BTree<T>::traverse() { traverse(this->root); }
@@ -153,22 +184,50 @@ template <typename T>
 void BTree<T>::traverse(BNode<T> *curr)
 {
     int ind = 0; 
+
     while(ind < curr->keys->size()) 
     {
-
         if(curr->isLeaf == false) {
             // traverse the children in order
             traverse(curr->children->at(ind));
         }
+        
+        if(curr->isLeaf == true){
+            std::cout << "isLeaf";
+            curr->print();
+        }
+
         std::cout << "(";
         printKey(curr->keys->at(ind)->key);
         std::cout << ", " << curr->keys->at(ind)->index << ")" << std::endl;
         ind++; 
     };  
 
-    if(curr->isLeaf == false) {
-        // traverse the last child
-        traverse(curr->children->at(ind));
+}
+
+template <typename T>
+BNode<T>* BTree<T>::getNode(T key)
+{
+    BNode<T> *curr = root; 
+
+    while(true) {
+
+        int i = 0; 
+        while ( i < curr->keys->size() && (compare(key, curr->keys->at(i)->key) > 0) ){
+            i++;
+        }
+        
+        if( i < curr->keys->size() && compare(key, curr->keys->at(i)->key) == 0 ) {
+            return curr;
+        }
+
+        else if(curr->isLeaf) {
+            return nullptr; 
+        }
+        
+        else {
+            curr = curr->children->at(i);
+        }
     }
 }
 
@@ -199,7 +258,6 @@ BNodeKey<T>* BTree<T>::search(T key)
         }
     }
 }
-
 
 
 

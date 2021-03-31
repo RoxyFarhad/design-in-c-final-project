@@ -47,7 +47,7 @@ unsigned BNode<T>::insertKey(T k, int index)
     if(this->keys->size() == 0) {
        this->keys->push_back(newKey);
     } else {
-	
+
         auto it = this->keys->begin(); 
         while(it != this->keys->end() && (compare(k, (*it)->key) > 0) ) {
             it++; 
@@ -100,6 +100,8 @@ void BNode<T>::print()
 	printKey((*it)->key); 
 	std::cout << ", " << (*it)->index << "), ";
     }
+
+    std::cout << "Children: " << this->children->size();
   
     std::cout << std::endl;
 }

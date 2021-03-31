@@ -53,7 +53,7 @@ namespace btree
                 isLeaf = true;
                 size = 0; 
                 compare = compFunc; 
-                printKey = print; 
+                printKey = print;
                 minKey = NULL; 
                 maxKey = NULL; 
             }
