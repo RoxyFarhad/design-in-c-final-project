@@ -23,7 +23,7 @@ BTree<T>::BTree( int t, int (*compFunc)(T, T), void (*print)(T) )
 template <typename T>
 BTree<T>::~BTree() {
     // have to go through all the nodes and delete them
-    delete this; 
+    // delete this; 
 }
 
 template <typename T>

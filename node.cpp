@@ -23,14 +23,14 @@ BNode<T>::BNode(int m, int (*compFunc)(T, T), void (*print)(T))
 template <typename T>
 BNode<T>::~BNode()
 {
-    int i = 0; 
-    for(int i = 0; i < this->keys->size(); i++){
-        delete this->keys->at(i); 
-    }
-    for(int i = 0; i < this->children->size(); i++){
-        delete this->children->at(i); 
-    }
-    delete this; 
+    // int i = 0; 
+    // for(int i = 0; i < this->keys->size(); i++){
+    //     delete this->keys->at(i); 
+    // }
+    // for(int i = 0; i < this->children->size(); i++){
+    //     delete this->children->at(i); 
+    // }
+    // delete this; 
 }
 
 /*
