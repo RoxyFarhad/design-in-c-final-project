@@ -23,7 +23,14 @@ BNode<T>::BNode(int m, int (*compFunc)(T, T), void (*print)(T))
 template <typename T>
 BNode<T>::~BNode()
 {
-
+    // int i = 0; 
+    // for(int i = 0; i < this->keys->size(); i++){
+    //     delete this->keys->at(i); 
+    // }
+    // for(int i = 0; i < this->children->size(); i++){
+    //     delete this->children->at(i); 
+    // }
+    // delete this; 
 }
 
 /*
@@ -56,9 +63,21 @@ unsigned BNode<T>::insertKey(T k, int index)
 }
 
 template <typename T> 
-unsigned BNode<T>::insertChild(BNodeType *x)
+unsigned BNode<T>::insertChild(int i, BNodeType *x)
 {
-    this->children->push_back(x);
+    // get the iterator to insert
+    if(i == this->children->size()){
+        this->children->push_back(x); 
+    }
+    else {
+        auto it = this->children->begin(); 
+        int ind = 0; 
+        while(ind < i){
+            ind++; 
+            it++; 
+        }
+        this->children->insert(it, x);
+    }
     return this->children->size() - 1; 
 }
 
