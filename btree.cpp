@@ -61,19 +61,27 @@ void BTree<T>::splitChild(BNode<T> *x, int i)
             childCount += 1; 
         }
     }
-    
-    toSplit->maxKeys = this->m - 1; 
 
     // insert the middle key of toSplit to the node that was split
-    x->keys->push_back(toSplit->keys->at(this->m - 1));
+    BNodeKey<T> *bKey = toSplit->keys->at(this->m - 1); 
 
+    // 
+    auto it = x->keys->begin();
+    int childInd = 0; 
+    while(it < x->keys->end() && compare(bKey->key, (*it)->key) > 0) 
+    {
+        it++;
+        childInd++; 
+    }
+
+    x->keys->insert(it, bKey);
     // have to remove the keys / children from the node that we copied from
     toSplit->removeKey(this->m-1, keyCount + this->m);
     toSplit->removeChild(this->m, childCount + this->m);
 
     // add the new node to the parent
-    x->insertChild(newNode);
-
+    x->insertChild(childInd+1, newNode);
+    
     // std::cout << "x: ";
     // x->print();
     // std::cout << "\n";
@@ -92,7 +100,6 @@ void BTree<T>::splitChild(BNode<T> *x, int i)
 template <typename T> 
 void BTree<T>::insert(T key) 
 {   
-    
     this->index+=1; 
     int ind = this->index;
 
@@ -102,7 +109,7 @@ void BTree<T>::insert(T key)
     // if the root is full
     else if(this->root->keys->size() == 2 * m - 1){
         BNode<T> *node = new BNode<T>(m, compare, printKey); 
-        int pos = node->insertChild(root);
+        int pos = node->insertChild(0, root);
         node->isLeaf = false; 
         splitChild(node, pos); 
         root = node; 
@@ -111,32 +118,27 @@ void BTree<T>::insert(T key)
     BNode<T> *curr = root; // if the root is not full we need to find the right place to insert (only on leaf)
 
     while(!curr->isLeaf) {
-
-        int keyInd = curr->keys->size() - 1; 
+        int keyInd = curr->keys->size() - 1;  
+        
         while(keyInd >= 0 && (compare(key, curr->keys->at(keyInd)->key) < 0)) {
-            std::cout << curr->keys->at(keyInd)->key << ", " << key << std::endl;
             keyInd--; 
         }
+        
         // keyInd is place where K is greater than key -> insert key in place after that
         keyInd += 1; 
 
         // check if the current child is full
         if(curr->children->at(keyInd)->keys->size() == 2 * m - 1){
 
-            // split the child of curr
             splitChild(curr, keyInd);
 
-            // after split figure out where to put the new key
-            if(compare(curr->keys->at(keyInd)->key, key)) {
-                keyInd++;
+            if(compare(curr->keys->at(keyInd)->key, key) < 0){
+                keyInd++; 
             }
-
             // at this point keyInd points to index where k > keys[keyInd]
         }
-        curr = curr->children->at(keyInd);
-
+        curr = curr->children->at(keyInd); 
     }
-
     curr->insertKey(key, ind); 
 }
 
