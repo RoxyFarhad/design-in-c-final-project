@@ -28,7 +28,7 @@ class BTree
         ~BTree( ); /* destructor */ 
 
         void clear(); /* clears the tree */
-        void insert(T); /* inserts a key into the tree */ 
+        int insert(T); /* inserts a key into the tree */ 
         T remove(T); /* removes a key from tree */ 
         BNodeKey<T>* search(T); /* returns the node associated with key */
         void traverse(); /* traverses the tree */

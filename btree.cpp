@@ -98,7 +98,7 @@ void BTree<T>::splitChild(BNode<T> *x, int i)
  * Inserting a node into a tree
  */
 template <typename T> 
-void BTree<T>::insert(T key) 
+int BTree<T>::insert(T key) 
 {   
     this->index+=1; 
     int ind = this->index;
@@ -140,6 +140,7 @@ void BTree<T>::insert(T key)
         curr = curr->children->at(keyInd); 
     }
     curr->insertKey(key, ind); 
+    return ind; 
 }
 
 template <typename T>
