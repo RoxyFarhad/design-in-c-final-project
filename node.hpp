@@ -38,7 +38,7 @@ class BNode
         ~BNode( ); /* destructor */
         void print( );
         unsigned insertKey(T k, int index); /* inserts the key into node - returns the index of the key in node */
-        unsigned insertChild(BNodeType *x); 
+        unsigned insertChild(int i, BNodeType *x); 
         void removeKey(int i, int j); 
         void removeChild(int i, int j);
 };

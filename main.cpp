@@ -4,6 +4,7 @@
 
 using namespace std;
 
+
 int compareInt(int a, int b) { 
     return a - b; 
 };
@@ -14,10 +15,10 @@ int main() {
     int m = 2;
     BTree<int> btree(m, &compareInt, &printKey);
 
-    for(int i = 1; i < 15; i++)
+    for(int i = 1; i < 20; i++)
     {
-        btree.insert(i);
+        btree.insert(rand() % 100 + 1);
     }
-    btree.search(10);
+    btree.traverse(); 
     return 0;
 }
