@@ -301,7 +301,7 @@ BTree<Interface::date_time>* Interface::insertData()
         last = pos + 1;  
         index++; 
     }
-    pos = header.find(' ', last); 
+    pos = header.length()-1;
     token = header.substr(last, pos - last);
     this->columns->operator[](token) = index; 
     
