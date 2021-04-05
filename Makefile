@@ -1,4 +1,4 @@
-CC = g++ -std=c++2a
+CC = g++-8 -std=c++2a
 
 CFLAGS = -g -Wall
 

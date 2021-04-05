@@ -125,7 +125,7 @@ void Interface::select(std::string line, BTree<Interface::date_time> *btree)
     if ((pos = line.find("WHERE")) != std::string::npos) {
         std::vector<std::string> tokens; 
         lineCopy = line.substr(pos + 5, line.size() - 1);
-        std::string token; 
+	std::string token; 
         while((pos = lineCopy.find(' ')) != std::string::npos) {
             token = lineCopy.substr(0, pos); 
             tokens.push_back(token); 
@@ -135,7 +135,8 @@ void Interface::select(std::string line, BTree<Interface::date_time> *btree)
         while (it != tokens.end()) {
             if((*it) == "=") {
                 std::string value = *(it + 1); 
-                std::tm tm = {};
+		std::cout << value << std::endl; 
+		std::tm tm = {};
                 std::istringstream ss(value);
                 ss >> std::get_time(&tm, "%d-%m-%Y");
                 Interface::date_time dt = std::chrono::system_clock::from_time_t(mktime(&tm));
@@ -274,7 +275,7 @@ BTree<Interface::date_time>* Interface::insertData()
             pk = row.substr(0, pos);
             row.erase(0, pos+1);
         }
-        
+	values->push_back(pk);         
         // gets the rest of the row 
         std::string token; 
         while((pos = row.find(',')) != std::string::npos) {
