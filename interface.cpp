@@ -22,7 +22,7 @@ void printKey(std::chrono::system_clock::time_point tp) {
     std::time_t time = std::chrono::system_clock::to_time_t(tp);
     auto tm = std::localtime(&time);
     char buffer[10];
-    std::strftime(buffer, 10, "%Y-%m-%d", tm);
+    std::strftime(buffer, 10, "%d-%m-%Y", tm);
     std::cout << std::string(buffer) << std::endl;
 };
 
