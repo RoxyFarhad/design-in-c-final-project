@@ -10,6 +10,8 @@
 #include <sstream>
 #include <ctime>
 #include <utility>
+#include <set>
+
 class Interface
 {
     using date_time = std::chrono::system_clock::time_point; 
@@ -19,7 +21,10 @@ class Interface
         BTree<date_time>* insertData();  
         std::string dateTimetoString(date_time date); 
         void printInstructions(); 
-        void select(); 
+        void select(std::string line, BTree<Interface::date_time> *btree);
+        void remove(std::string line, BTree<Interface::date_time> *btree); 
+        void insert(std::string line, BTree<Interface::date_time> *btree);  
+        void printSelect(std::set<std::string> columns, std::vector<std::vector<std::string>> values);
     public:
         Interface();
         void run(); 

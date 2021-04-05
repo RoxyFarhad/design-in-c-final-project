@@ -12,7 +12,7 @@ $(TARGET): $(TARGET).o
 $(TARGET).o: $(TARGET).cpp interface.cpp interface.o
 			$(CC) $(CFLAGS) -c $(TARGET).cpp
 
-interface.o: interface.cpp interface.hpp btree.o
+interface.o: interface.cpp interface.hpp TextTable.hpp btree.o
 	$(CC) $(CFLAGS) -c interface.cpp
 
 btree.o: btree.cpp btree.hpp node.o
