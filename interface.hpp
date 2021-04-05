@@ -24,7 +24,7 @@ class Interface
         void select(std::string line, BTree<Interface::date_time> *btree);
         void remove(std::string line, BTree<Interface::date_time> *btree); 
         void insert(std::string line, BTree<Interface::date_time> *btree);  
-        void printSelect(std::set<std::string> columns, std::vector<std::vector<std::string>> values);
+        void printSelect(std::vector<std::string> columns, std::vector<std::vector<std::string>> values);
     public:
         Interface();
         void run(); 

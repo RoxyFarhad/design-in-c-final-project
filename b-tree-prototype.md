@@ -55,5 +55,5 @@ Insert function:
 
 SELECT METHOD:
 1. returns all the elements (only top 50 shown on screen for simplicity)
-2. if there is a where clause then only select that element 
+2. if there is a where clause then only select that element
 
