@@ -170,7 +170,6 @@ template <typename T>
 bool BTree<T>::isHeightBalanced()
 {
     return isHeightBalanced(this->root);
-
 }
 
 template <typename T>
@@ -187,8 +186,6 @@ bool BTree<T>::isHeightBalanced(BNode<T> *curr)
         return false;
     }
     return isHeightBalanced(curr->children->at(0)) && isHeightBalanced(curr->children->at(curr->children->size()-1));
-
-
 }
 
 template <typename T>
@@ -239,14 +236,11 @@ void BTree<T>::traverse(BNode<T> *curr)
                     // std::cout << curr->keys->at(i)->key << std::endl;
                     assert(last <= curr->keys->at(i)->key);
         };
-
-        
     };  
 
     if(curr->isLeaf == false) {
         // traverse the last child
         traverse(curr->children->at(ind));
-        
     }
 }
 
