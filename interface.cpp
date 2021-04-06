@@ -181,14 +181,10 @@ void Interface::select(std::string line, BTree<Interface::date_time> *btree)
                 int index = bKey->index; 
                 std::vector<std::string> tempValues; 
                 std::vector<std::string> *values = indices->operator[](index); 
-                for(auto it = values->begin(); it != values->end(); it++) {
-                    std::cout << *it << std::endl;
-                }
                 // only select the valid columns
                 int i = 0; 
                 while(i < validIndices.size()) {
-                    std::cout << "valid index: " << validIndices[i] << std::endl; 
-                     std::string value = values->operator[](validIndices[i]);
+                    std::string value = values->operator[](validIndices[i]);
                     tempValues.push_back(value); 
                     i++; 
                 }
@@ -234,7 +230,6 @@ void Interface::printSelect(std::vector<std::string> columns, std::vector<std::v
     auto columnIt = columns.begin(); 
     while(columnIt != columns.end())
     {
-        std::cout << *columnIt << std::endl; 
         t.add(*columnIt); 
         columnIt++; 
     }
@@ -244,15 +239,13 @@ void Interface::printSelect(std::vector<std::string> columns, std::vector<std::v
     auto valueIt = values.begin(); 
     while(valueIt != values.end()){
         std::vector<std::string> row = *valueIt; 
-        auto rowIt = row.begin(); 
-        while(rowIt != row.end()) {
-            t.add(*rowIt); 
-            rowIt++; 
+        for(int i = 0; i < row.size(); i++) {
+            t.add(row[i]); 
         }
         t.endOfRow(); 
         valueIt++; 
     }
-    t.setAlignment( 2, TextTable::Alignment::RIGHT );
+    t.setAlignment( 15, TextTable::Alignment::RIGHT );
     std::cout << t; 
 }
 
@@ -304,10 +297,6 @@ BTree<Interface::date_time>* Interface::insertData()
     pos = header.length()-1;
     token = header.substr(last, pos - last);
     this->columns->operator[](token) = index; 
-    
-    for(auto it = columns->begin(); it != columns->end(); it++){
-        std::cout << it->first << ", " << it->second << std::endl; 
-    }
 
     std::string row; 
     BTree<Interface::date_time> *btree = new BTree<Interface::date_time>(3, &compareDates, &printKey); 
@@ -315,33 +304,30 @@ BTree<Interface::date_time>* Interface::insertData()
     while(getline(pFile, row))
     {
         std::string pk; 
-        size_t pos = 0; 
+        last = 0;
+        pos = 0; 
         std::vector<std::string> *stringVal = new std::vector<std::string>(); 
         // get the primary key pos[0]
-        if((pos = row.find(',')) != std::string::npos) {
-            pk = row.substr(0, pos);
-            row.erase(0, pos+1);
+        while((pos = row.find(',', last)) != std::string::npos) {
+            token = row.substr(last, pos-last);
+            stringVal->push_back(token);         
+            last = pos + 1; 
         }
-	    stringVal->push_back(pk);         
+        pos = row.length() - 1; 
+        token = row.substr(last, pos - last); 
+        stringVal->push_back(token); 
+
         // gets the rest of the row 
-        std::string token; 
-        while((pos = row.find(',')) != std::string::npos) {
-            token = row.substr(0, pos);
-            stringVal->push_back(token); 
-            row.erase(0, pos+1);
-        }
-        if(row[row.length() - 1] == '\n') {
-            row.erase(row.length() - 1); 
-        }
-        stringVal->push_back(row); 
+ 
         // convert the date into ymd format
         std::tm tm = {};
-        std::istringstream ss(pk);
+        std::istringstream ss(stringVal->operator[](0));
         ss >> std::get_time(&tm, "%d-%m-%Y");
         Interface::date_time dt = std::chrono::system_clock::from_time_t(timegm(&tm));
         int index = btree->insert(dt); 
         indices->operator[](index) = stringVal; 
     }
+    btree->traverse(); 
     return btree; 
 }
 
