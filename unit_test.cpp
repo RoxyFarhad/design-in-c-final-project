@@ -33,21 +33,25 @@ int main()
         
     BTree<int> btree(m, &compare, &printKey);
 
-    // insert elements in descending order
+    /* insert elements in descending order */
     for(int i = 1000; i > 0; i--)
     {
         btree.insert(i);
     }
 
-    btree.traverse(); 
+    btree.traverse(); /* traverse calls btree property asserts */ 
+    assert(btree.isHeightBalanced()); /* check tree is balanced */
 
-    // insert elements in ascending order
+    /* insert elements in ascending order */ 
     for(int i = 1001; i < 10000; i++)
     {
         btree.insert(i);
     }
     btree.traverse(); 
+    assert(btree.isHeightBalanced()); 
 
+    /* checks search function */
+     
     assert(btree.search(40)->key == 40);
     assert(btree.search(1)->key == 1);
     assert(btree.search(5000)->key == 5000);

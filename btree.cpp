@@ -1,5 +1,7 @@
 #include "btree.hpp"
 #include <math.h> 
+#include <algorithm>
+#include <cmath>
 
 template <typename T>
 BTree<T>::BTree(int m) 
@@ -149,6 +151,44 @@ template <typename T>
 T BTree<T>::remove(T key)
 {
     return key; 
+}
+
+template <typename T>
+int BTree<T>::height(BNode<T> *curr)
+{
+    if(curr->isLeaf == true) 
+    {
+        return 0;
+    }
+    int leftHt = height(curr->children->at(0));
+    int rightHt = height(curr->children->at(curr->children->size()-1));
+    int curHt = std::max(leftHt, rightHt) + 1;
+    return curHt;
+}
+
+template <typename T>
+bool BTree<T>::isHeightBalanced()
+{
+    return isHeightBalanced(this->root);
+
+}
+
+template <typename T>
+bool BTree<T>::isHeightBalanced(BNode<T> *curr)
+{   
+    if(curr->isLeaf == true)
+    {
+        return true;
+    }
+    int leftHt = height(curr->children->at(0));
+    int rightHt = height(curr->children->at(curr->children->size()-1));
+    if(std::abs(leftHt - rightHt) > 1)
+    {
+        return false;
+    }
+    return isHeightBalanced(curr->children->at(0)) && isHeightBalanced(curr->children->at(curr->children->size()-1));
+
+
 }
 
 template <typename T>
