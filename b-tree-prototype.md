@@ -53,5 +53,7 @@ Insert function:
 
 - looking at underlying datastructures in the container and see how by changing the structure it affects the runtime of the methods: INSERT, SELECT, REMOVE
 
-
+SELECT METHOD:
+1. returns all the elements (only top 50 shown on screen for simplicity)
+2. if there is a where clause then only select that element
 
