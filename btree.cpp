@@ -1,4 +1,5 @@
 #include "btree.hpp"
+#include <math.h> 
 
 template <typename T>
 BTree<T>::BTree(int m) 
@@ -61,19 +62,27 @@ void BTree<T>::splitChild(BNode<T> *x, int i)
             childCount += 1; 
         }
     }
-    
-    toSplit->maxKeys = this->m - 1; 
 
     // insert the middle key of toSplit to the node that was split
-    x->keys->push_back(toSplit->keys->at(this->m - 1));
+    BNodeKey<T> *bKey = toSplit->keys->at(this->m - 1); 
 
+    // 
+    auto it = x->keys->begin();
+    int childInd = 0; 
+    while(it < x->keys->end() && compare(bKey->key, (*it)->key) > 0) 
+    {
+        it++;
+        childInd++; 
+    }
+
+    x->keys->insert(it, bKey);
     // have to remove the keys / children from the node that we copied from
     toSplit->removeKey(this->m-1, keyCount + this->m);
     toSplit->removeChild(this->m, childCount + this->m);
 
     // add the new node to the parent
-    x->insertChild(newNode);
-
+    x->insertChild(childInd+1, newNode);
+    
     // std::cout << "x: ";
     // x->print();
     // std::cout << "\n";
@@ -90,9 +99,8 @@ void BTree<T>::splitChild(BNode<T> *x, int i)
  * Inserting a node into a tree
  */
 template <typename T> 
-void BTree<T>::insert(T key) 
+int BTree<T>::insert(T key) 
 {   
-    
     this->index+=1; 
     int ind = this->index;
 
@@ -102,7 +110,7 @@ void BTree<T>::insert(T key)
     // if the root is full
     else if(this->root->keys->size() == 2 * m - 1){
         BNode<T> *node = new BNode<T>(m, compare, printKey); 
-        int pos = node->insertChild(root);
+        int pos = node->insertChild(0, root);
         node->isLeaf = false; 
         splitChild(node, pos); 
         root = node; 
@@ -111,40 +119,35 @@ void BTree<T>::insert(T key)
     BNode<T> *curr = root; // if the root is not full we need to find the right place to insert (only on leaf)
 
     while(!curr->isLeaf) {
-
-        int keyInd = curr->keys->size() - 1; 
+        int keyInd = curr->keys->size() - 1;  
+        
         while(keyInd >= 0 && (compare(key, curr->keys->at(keyInd)->key) < 0)) {
-            std::cout << curr->keys->at(keyInd)->key << ", " << key << std::endl;
+            // std::cout << curr->keys->at(keyInd)->key << ", " << key << std::endl;
             keyInd--; 
         }
+        
         // keyInd is place where K is greater than key -> insert key in place after that
         keyInd += 1; 
 
         // check if the current child is full
         if(curr->children->at(keyInd)->keys->size() == 2 * m - 1){
 
-            // split the child of curr
             splitChild(curr, keyInd);
 
-            // after split figure out where to put the new key
-            if(compare(curr->keys->at(keyInd)->key, key)) {
-                keyInd++;
-
+            if(compare(curr->keys->at(keyInd)->key, key) < 0){
+                keyInd++; 
             }
-
             // at this point keyInd points to index where k > keys[keyInd]
         }
-        curr = curr->children->at(keyInd);
-
+        curr = curr->children->at(keyInd); 
     }
-
     curr->insertKey(key, ind); 
+    return ind; 
 }
 
 template <typename T>
-void BTree<T>::remove(T key)
+T BTree<T>::remove(T key)
 {
-
     BNode<T> *curr = getNode(key);
 
     // If the key k is in node x and x is a leaf node
@@ -205,6 +208,7 @@ void BTree<T>::deleteInternalNode(BNode<T> *curr, T key)
     }
 }
 
+
 template <typename T>
 void BTree<T>::merge(BNode<T> *curr, T predKey, T succKey)
 {
@@ -223,7 +227,7 @@ void BTree<T>::merge(BNode<T> *curr, T predKey, T succKey)
     // Copy pointers to child node
     if(child->children->size() > 0){
         for(int i = 0; i < sibling->children->size(); i++ ){
-        child->insertChild(sibling->children->at(i));
+        child->insertChild(i, sibling->children->at(i));
         }
     }
 
@@ -233,7 +237,7 @@ void BTree<T>::merge(BNode<T> *curr, T predKey, T succKey)
     // Removing key
     curr->removeKey(predKey, succKey);
 
-    delete(sibling);
+    d
 
     // Moving child pointers
     // for(int i = predKey)
@@ -242,39 +246,6 @@ void BTree<T>::merge(BNode<T> *curr, T predKey, T succKey)
     child->print();
     sibling->print();
 
-
-}
-
-template <typename T>
-void BTree<T>::traverse() { traverse(this->root); }
-
-template <typename T>
-void BTree<T>::traverse(BNode<T> *curr)
-{
-    int ind = 0; 
-
-    while(ind < curr->keys->size()) 
-    {
-        if(curr->isLeaf == false) {
-            // traverse the children in order
-            traverse(curr->children->at(ind));
-        }
-        
-        if(curr->isLeaf == true) {
-            // traverse the children in order
-            std::cout << "isLeaf: " ;
-        }
-
-        std::cout << "(";
-        printKey(curr->keys->at(ind)->key);
-        std::cout << ", " << curr->keys->at(ind)->index << ")" << std::endl;
-        ind++; 
-    };  
-
-    if(curr->isLeaf == false) {
-        // traverse the children in order
-        traverse(curr->children->at(ind));
-    }
 
 }
 
@@ -306,11 +277,72 @@ BNode<T>* BTree<T>::getNode(T key)
 
 
 template <typename T>
+void BTree<T>::traverse() 
+{ 
+    traverse(this->root); 
+}
+
+template <typename T>
+void BTree<T>::traverse(BNode<T> *curr)
+{
+    int ind = 0; 
+    while(ind < curr->keys->size()) 
+    {
+        
+        if(curr->isLeaf == false) {
+            // all non leaf nodes except root must have at least m/2 children
+            if(curr != root) {
+            assert(curr->children->size() >= m / 2);
+            }
+
+            // a non leafnode with n-1 keys must have n number of children
+            assert(curr->children->size() == curr->keys->size() + 1);
+
+            // traverse the children in order
+            traverse(curr->children->at(ind));
+        }
+        std::cout << "(";
+        printKey(curr->keys->at(ind)->key);
+        std::cout << ", " << curr->keys->at(ind)->index << ")" << std::endl;
+        ind++;
+
+        // all nodes except root must have between ceil(m/2)-1 and 2m keys (?)
+        if(curr != root) {
+            // std::cout << "# of keys: " << curr->keys->size() << std::endl;
+            assert(curr->keys->size() >= ceil(m/2)-1 && curr->keys->size() <= 2 * m); 
+        };
+
+        // the root has between 1 and 2m-1 keys
+        assert(root->keys->size() >= 1 && root->keys->size() <= 2 * m - 1);
+
+        // if root node is non leaf node, then is must have at least 2 children
+        if(root->isLeaf == false){
+            assert(root->children->size() >= 2);
+        };
+
+        // all key values are in ascending order
+        if(curr->keys->size() > 1){
+                int last = curr->keys->at(0)->key;
+                for(int i = 1; i<curr->keys->size(); i++)
+                    // std::cout << curr->keys->at(i)->key << std::endl;
+                    assert(last <= curr->keys->at(i)->key);
+        };
+
+        
+    };  
+
+    if(curr->isLeaf == false) {
+        // traverse the last child
+        traverse(curr->children->at(ind));
+        
+    }
+}
+
+
+template <typename T>
 BNodeKey<T>* BTree<T>::search(T key)
 {
     BNode<T> *curr = root; 
-
-
 
     while(true) {
 
@@ -321,12 +353,10 @@ BNodeKey<T>* BTree<T>::search(T key)
         
         if( i < curr->keys->size() && compare(key, curr->keys->at(i)->key) == 0 ) {
             // found the key
-            curr->print();
             return curr->keys->at(i);
         }
 
         else if(curr->isLeaf) {
-            curr->print();
             return nullptr; 
         }
         
@@ -335,6 +365,7 @@ BNodeKey<T>* BTree<T>::search(T key)
         }
     }
 }
+
 
 
 

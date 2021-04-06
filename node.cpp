@@ -63,9 +63,21 @@ unsigned BNode<T>::insertKey(T k, int index)
 }
 
 template <typename T> 
-unsigned BNode<T>::insertChild(BNodeType *x)
+unsigned BNode<T>::insertChild(int i, BNodeType *x)
 {
-    this->children->push_back(x);
+    // get the iterator to insert
+    if(i == this->children->size()){
+        this->children->push_back(x); 
+    }
+    else {
+        auto it = this->children->begin(); 
+        int ind = 0; 
+        while(ind < i){
+            ind++; 
+            it++; 
+        }
+        this->children->insert(it, x);
+    }
     return this->children->size() - 1; 
 }
 

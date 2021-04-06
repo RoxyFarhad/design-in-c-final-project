@@ -28,22 +28,19 @@ class BTree
         ~BTree( ); /* destructor */ 
 
         void clear(); /* clears the tree */
-        void insert(T); /* inserts a key into the tree */ 
-        void remove(T); /* removes a key from tree */ 
-        BNodeKey<T>* search(T); /* returns the key associated with node */
+        int insert(T); /* inserts a key into the tree */ 
+        T remove(T); /* removes a key from tree */ 
+        BNodeKey<T>* search(T); /* returns the node associated with key */
         void traverse(); /* traverses the tree */
         std::vector<BNodeKey<T>*> searchRange(T lowKey, T highKey); /* finds values in a range */
-        BNode<T>* getNode(T); /* returns the node associated with the key */
-        // void deleteNode(BNode<T> *curr, T key);
-
+        
     private:
         void splitChild(BNode<T> *x, int i); 
         void traverse(BNode<T> *curr); /* traverses the tree */
-        void deleteLeafNode(BNode<T> *curr, T key);
-        void deleteInternalNode(BNode<T> *curr, T key);
         void merge(BNode<T> *curr, T predKey, T succKey);
-        
-
+        void deleteInternalNode(BNode<T> *curr, T key);
+        void deleteLeafNode(BNode<T> *curr, T key);
+        BNode<T>* getNode(T key);
 
 };
 

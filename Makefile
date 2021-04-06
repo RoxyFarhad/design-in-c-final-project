@@ -6,11 +6,14 @@ TARGET = main
 
 all: $(TARGET)
 
-$(TARGET): $(TARGET).o btree.o node.o
-			$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).o btree.o
+$(TARGET): $(TARGET).o
+			$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).o
 
-$(TARGET).o: $(TARGET).cpp btree.hpp node.hpp
-	$(CC) $(CFLAGS) -c $(TARGET).cpp
+$(TARGET).o: $(TARGET).cpp interface.cpp interface.o
+			$(CC) $(CFLAGS) -c $(TARGET).cpp
+
+interface.o: interface.cpp interface.hpp btree.o
+	$(CC) $(CFLAGS) -c interface.cpp
 
 btree.o: btree.cpp btree.hpp node.o
 	$(CC) $(CFLAGS) -c btree.cpp
