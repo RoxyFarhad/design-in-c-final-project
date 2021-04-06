@@ -199,23 +199,105 @@ void Interface::select(std::string line, BTree<Interface::date_time> *btree)
 
 void Interface::insert(std::string line, BTree<Interface::date_time> *btree)
 {   
-    // std::vector<std::string> validColumns; 
-    // std::vector<int> validIndices;     
+    // -1 indicates that there are no values being added to that column
+    std::vector<int> validIndices (this->columns->size(), 0);     
+    std::vector<std::string> *validValues = new std::vector<std::string> (this->columns->size(), ""); 
+    int firstBracketStart = line.find('('); 
+    int firstBracketEnd = line.find(')'); 
     
-    // std::string chosenColumns = line.substr(line.find('('), line.find(')')); 
-    // while ((pos = chosenColumns.find(',')) != std::string::npos) {
-    //     token = chosenColumns.substr(0, pos);
-    //     if(token.at(token.length() - 1) == ',') {
-    //         token.erase(token.size() - 1); 
-    //     }
-    //     if(columns->find(token) != columns->end()) {
-    //         validColumns.push_back(token); 
-    //         validIndices.push_back(columns->operator[](token)); 
-    //     }
-    //     chosenColumns.erase(0, pos + 1);
-    // }
-    // validColumns.push_back(chosenColumns)
+    size_t pos = 0; 
+    size_t last = 0; 
+    std::string token; 
 
+    bool havePrimaryKey = false;
+    std::string chosenColumns = line.substr(firstBracketStart + 1, firstBracketEnd - firstBracketStart - 1); 
+    while((pos = chosenColumns.find(',', last)) != std::string::npos) {
+        token = chosenColumns.substr(last, pos-last);
+        if(columns->find(token) != columns->end()) {
+            if(columns->operator[](token) == 0) {
+                havePrimaryKey = true; 
+            }
+            validIndices[columns->operator[](token)] = 1; 
+        } else {
+            std::cout << "invalid column name: " << token << std::endl; 
+            return; 
+        }
+        last = pos + 2; 
+    }
+    token = chosenColumns.substr(last, pos - last); 
+    if(columns->find(token) != columns->end()) {
+        if(columns->operator[](token) == 0) {
+            havePrimaryKey = true; 
+        }
+        validIndices[columns->operator[](token)] = 1; 
+    } else {
+        std::cout << "invalid column name: " << token << std::endl; 
+        return; 
+    }
+
+    if(!havePrimaryKey){
+        std::cout << "INSERT must include Primary Key i.e. first column of data " << std::endl;
+        printInstructions(); 
+        return;  
+    }
+
+    line.erase(0, firstBracketEnd + 1); 
+    // now parse the values
+
+    if(line.length() == 0){
+        std::cout << "invalid query, no input values";  
+        printInstructions();
+        return; 
+    }
+    
+    pos = 0; 
+    last = 0;
+    int firstBracket = line.find('(');
+    int lastBracket = line.find(')');
+
+    if(firstBracket == std::string::npos || lastBracket == std::string::npos)
+    {
+        std::cout << "invalid query, follow syntax instructions." << std::endl; 
+        printInstructions(); 
+    }
+
+    std::string chosenValues = line.substr(firstBracket + 1, lastBracket - firstBracket - 1);
+    std::cout << chosenValues << std::endl;  
+
+    while((pos = chosenValues.find(',', last)) != std::string::npos)
+    {
+        token = chosenValues.substr(last, pos - last); 
+
+        int i = 0; 
+        bool updateValue = false; 
+        while(i < validIndices.size() && !updateValue)
+        {
+            if(validIndices[i] == 1)
+            {
+                validIndices[i] = 0; 
+                validValues->operator[](i) = token; 
+                updateValue = true;                 
+            }
+        }
+        last = pos + 2; 
+    }   
+    token = chosenValues.substr(last, pos - last); 
+    int i = 0; 
+    while(i < validIndices.size()) {
+        if(validIndices[i] == 1){
+            validValues->operator[](i) = token; 
+            validIndices[i] = 0; 
+        }
+        i++; 
+    }
+
+    // now have to transform the data into the correct format
+    std::tm tm = {};
+    std::istringstream ss(validValues->operator[](0));
+    ss >> std::get_time(&tm, "%d-%m-%Y");
+    Interface::date_time dt = std::chrono::system_clock::from_time_t(timegm(&tm));
+    int index = btree->insert(dt); 
+    indices->operator[](index) = validValues;
 }   
 
 void Interface::remove(std::string line, BTree<Interface::date_time> *btree)
@@ -327,7 +409,6 @@ BTree<Interface::date_time>* Interface::insertData()
         int index = btree->insert(dt); 
         indices->operator[](index) = stringVal; 
     }
-    btree->traverse(); 
     return btree; 
 }
 
