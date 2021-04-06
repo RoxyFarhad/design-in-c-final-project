@@ -176,9 +176,6 @@ void BTree<T>::traverse(BNode<T> *curr)
             // traverse the children in order
             traverse(curr->children->at(ind));
         }
-        std::cout << "(";
-        printKey(curr->keys->at(ind)->key);
-        std::cout << ", " << curr->keys->at(ind)->index << ")" << std::endl;
         ind++;
 
         // all nodes except root must have between ceil(m/2)-1 and 2m keys (?)
