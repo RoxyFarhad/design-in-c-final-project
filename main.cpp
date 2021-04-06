@@ -12,17 +12,22 @@ int compareInt(int a, int b) {
 void printKey(int key) { cout << key; };
 
 int main() {
-    int m = 2;
+    int m = 3;
     BTree<int> btree(m, &compareInt, &printKey);
 
-    for(int i = 1; i < 30; i++)
+    for(int i = 1; i < 200; i++)
     {
         btree.insert(i);
+
     }
 
     btree.traverse();
+    for(int i = 1; i < 200; i++)
+    {
+        btree.search(i);   
+    }
 
-    btree.remove(40);
+    btree.remove(135);
 
     btree.traverse();
 

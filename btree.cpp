@@ -149,45 +149,99 @@ void BTree<T>::remove(T key)
 
     // If the key k is in node x and x is a leaf node
     if(curr->children->size() == 0){
-        std::cout<< "isLeaf";
-        curr->print();
-        int i = 0; 
-        while ( i < curr->keys->size() && (compare(key, curr->keys->at(i)->key) > 0) ){
-            i++;
-        }   
-        if( i < curr->keys->size() && compare(key, curr->keys->at(i)->key) == 0 ) {
-            curr->keys->erase(curr->keys->begin() + i);   
-        }
-    }
+        deleteLeafNode(curr, key);
+    } 
     // If the key k is in node x and x is an internal node
     else {
-
-        	BNode<T> *leftChild = curr->child[i];
-			BNode<T> *rightChild = curr->child[i + 1];
-
-            if(leftChild->size() > m){
-                
-            }
-
-
+        deleteInternalNode(curr, key);
     }
 
+}
 
+template <typename T>
+void BTree<T>::deleteLeafNode(BNode<T> *curr, T key)
+{
+    int i = 0; 
+    while ( i < curr->keys->size() && (compare(key, curr->keys->at(i)->key) > 0) ){
+        i++;
+    }   
+    if( i < curr->keys->size() && compare(key, curr->keys->at(i)->key) == 0 ) {
+        curr->keys->erase(curr->keys->begin() + i);   
+    }
+}
 
+template <typename T>
+void BTree<T>::deleteInternalNode(BNode<T> *curr, T key)
+{
 
-//     a) If the child y that precedes k in node x has at least t keys, then find the predecessor k0 of k in the sub-tree rooted at y. Recursively delete k0, and replace k by k0 in x. (We can find k0 and delete it in a single downward pass.)
+    int keyInd = 0; 
+    while ( keyInd < curr->keys->size() && (compare(key, curr->keys->at(keyInd)->key) > 0) ){
+        keyInd++;
+    } 
 
-//     b) If y has fewer than t keys, then, symmetrically, examine the child z that follows k in node x. If z has at least t keys, then find the successor k0 of k in the subtree rooted at z. Recursively delete k0, and replace k by k0 in x. (We can find k0 and delete it in a single downward pass.)
+    if( keyInd < curr->keys->size() && compare(key, curr->keys->at(keyInd)->key) == 0 ) {
 
-//      c) Otherwise, if both y and z have only t-1 keys, merge k and all of z into y, so that x loses both k and the pointer to z, and y now contains 2t-1 keys. Then free z and recursively delete k from y.
+        int predKey = keyInd;
+        int succKey = keyInd+1;
+        std::cout << "predKey: " << predKey << std::endl;
+        std::cout << "succKey: " << succKey << std::endl;
+        std::cout << m;
+        std::cout << curr->children->at(predKey)->keys->size() << std::endl;
 
+        //If the child that precedes key has more than the minimum degree
+        if(predKey >= 0 && curr->children->at(predKey)->keys->size() >= m){
+            std::cout <<"pred!";
+            curr->print();
+        }
+        else if (succKey < curr->keys->size() && curr->children->at(succKey)->keys->size() >= m){
+            std::cout <<"succ!";
+            curr->print();
+        } 
+        else {
+            curr->print();
+            merge(curr, predKey, succKey);
+            remove(predKey);
+        }
+    }
+}
 
+template <typename T>
+void BTree<T>::merge(BNode<T> *curr, T predKey, T succKey)
+{
+    BNode<T> *child = curr->children->at(predKey); 
+    BNode<T> *sibling = curr->children->at(succKey);
 
-// 3. If the key k is not present in internal node x, determine the root x.c(i) of the appropriate subtree that must contain k, if k is in the tree at all. If x.c(i) has only t-1 keys, execute step 3a or 3b as necessary to guarantee that we descend to a node containing at least t keys. Then finish by recursing on the appropriate child of x.
+    curr->print();
+    child->print();
+    sibling->print();
 
-//     a) If x.c(i) has only t-1 keys but has an immediate sibling with at least t keys, give x.c(i) an extra key by moving a key from x down into x.c(i), moving a key from x.c(i) ’s immediate left or right sibling up into x, and moving the appropriate child pointer from the sibling into x.c(i).
+    // Copy keys to child node
+    for(int i = 0; i < sibling->keys->size(); i++ ){
+        child->insertKey(sibling->keys->at(i)->key, sibling->keys->at(i)->index);
+    }
 
-//     b) If x.c(i) and both of x.c(i)’s immediate siblings have t-1 keys, merge x.c(i) with one sibling, which involves moving a key from x down into the new merged node to become the median key for that node.
+    // Copy pointers to child node
+    if(child->children->size() > 0){
+        for(int i = 0; i < sibling->children->size(); i++ ){
+        child->insertChild(sibling->children->at(i));
+        }
+    }
+
+    // Removing child
+    curr->removeChild(succKey, succKey+1);
+
+    // Removing key
+    curr->removeKey(predKey, succKey);
+
+    delete(sibling);
+
+    // Moving child pointers
+    // for(int i = predKey)
+
+    curr->print();
+    child->print();
+    sibling->print();
+
 
 }
 
@@ -256,6 +310,8 @@ BNodeKey<T>* BTree<T>::search(T key)
 {
     BNode<T> *curr = root; 
 
+
+
     while(true) {
 
         int i = 0; 
@@ -265,10 +321,12 @@ BNodeKey<T>* BTree<T>::search(T key)
         
         if( i < curr->keys->size() && compare(key, curr->keys->at(i)->key) == 0 ) {
             // found the key
+            curr->print();
             return curr->keys->at(i);
         }
 
         else if(curr->isLeaf) {
+            curr->print();
             return nullptr; 
         }
         

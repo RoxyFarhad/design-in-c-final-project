@@ -39,7 +39,9 @@ class BTree
     private:
         void splitChild(BNode<T> *x, int i); 
         void traverse(BNode<T> *curr); /* traverses the tree */
-        // void deleteNode(BNode<T> *curr, T key);
+        void deleteLeafNode(BNode<T> *curr, T key);
+        void deleteInternalNode(BNode<T> *curr, T key);
+        void merge(BNode<T> *curr, T predKey, T succKey);
         
 
 

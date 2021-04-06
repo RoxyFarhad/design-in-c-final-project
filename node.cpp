@@ -95,6 +95,8 @@ void BNode<T>::print()
 {
     std::cout << "Node values: ";
 
+    std::cout << keys->size();
+
     for(auto it = keys->begin(); it != keys->end(); it++) {
         std::cout << "(";
 	printKey((*it)->key); 
@@ -104,5 +106,5 @@ void BNode<T>::print()
     std::cout << "Children: " << this->children->size();
   
     std::cout << std::endl;
-}
+} 
 
