@@ -141,7 +141,7 @@ void Interface::select(std::string line, BTree<Interface::date_time> *btree)
                 std::string value = *(it + 1); 
                 std::tm tm = {};
                 std::istringstream ss(value);
-                ss >> std::get_time(&tm, "%d-%m-%Y");
+                ss >> std::get_time(&tm, "%d/%m/%Y");
                 Interface::date_time dt = std::chrono::system_clock::from_time_t(timegm(&tm));
                 dates.insert(dt); 
             }
@@ -262,7 +262,6 @@ void Interface::insert(std::string line, BTree<Interface::date_time> *btree)
     }
 
     std::string chosenValues = line.substr(firstBracket + 1, lastBracket - firstBracket - 1);
-    std::cout << chosenValues << std::endl;  
 
     while((pos = chosenValues.find(',', last)) != std::string::npos)
     {
@@ -294,7 +293,7 @@ void Interface::insert(std::string line, BTree<Interface::date_time> *btree)
     // now have to transform the data into the correct format
     std::tm tm = {};
     std::istringstream ss(validValues->operator[](0));
-    ss >> std::get_time(&tm, "%d-%m-%Y");
+    ss >> std::get_time(&tm, "%d/%m/%Y");
     Interface::date_time dt = std::chrono::system_clock::from_time_t(timegm(&tm));
     int index = btree->insert(dt); 
     indices->operator[](index) = validValues;
@@ -319,7 +318,7 @@ void Interface::remove(std::string line, BTree<Interface::date_time> *btree)
     // convert the date into comparable structure
     std::tm tm = {};
     std::istringstream ss(token);
-    ss >> std::get_time(&tm, "%d-%m-%Y");
+    ss >> std::get_time(&tm, "%d/%m/%Y");
     Interface::date_time dt = std::chrono::system_clock::from_time_t(timegm(&tm));
     BNodeKey<Interface::date_time> *bKey = btree->search(dt);
     btree->remove(bKey->key); 
@@ -425,7 +424,7 @@ BTree<Interface::date_time>* Interface::insertData()
         // convert the date into ymd format
         std::tm tm = {};
         std::istringstream ss(stringVal->operator[](0));
-        ss >> std::get_time(&tm, "%d-%m-%Y");
+        ss >> std::get_time(&tm, "%d/%m/%Y");
         Interface::date_time dt = std::chrono::system_clock::from_time_t(timegm(&tm));
         int index = btree->insert(dt); 
         indices->operator[](index) = stringVal; 
@@ -438,6 +437,6 @@ std::string Interface::dateTimetoString(Interface::date_time date)
     std::time_t now_date = std::chrono::system_clock::to_time_t(date);
     auto tm = std::localtime(&now_date);
     char buffer[20];
-    std::strftime(buffer, 20, "%d-%m-%Y", tm);
+    std::strftime(buffer, 20, "%d/%m/%Y", tm);
     return std::string(buffer); 
 }

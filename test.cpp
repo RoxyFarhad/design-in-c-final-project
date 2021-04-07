@@ -152,7 +152,7 @@ void containerComparisons()
     for(int j = 1; j <= 20; j++)
     {
         // generate a list of numbers with random value and measure how long it takes to insert
-        int m = 3; 
+        int m = 12; 
         BTree<int> btree = BTree<int>(m, &compare, &printInt); 
         std::vector<int> intVec; 
         std::map<int, int> intMap; 
@@ -169,13 +169,13 @@ void containerComparisons()
             randInsert.push_back(num);  
         }
 
-        //float bTime = insertBTree(btree, values);
-        // float vecTime = insertVector(intVec, values); 
-        float mapTime = insertMap(intMap, values); 
+        float bTime = insertBTree(btree, values);
+        //float vecTime = insertVector(intVec, values); 
+        //float mapTime = insertMap(intMap, values); 
         // float listTime = insertList(values); 
         //std::cout << mapTime << std::endl; 
         // std::cout << "Number of Values: " << numOfValues << std::endl; 
-        // std::cout << "btree-insert-time: " << bTime << std::endl; 
+        //std::cout << bTime << std::endl; 
         // std::cout << "vec-insert-time: " << vecTime << std::endl; 
 
         // choose 10 values randomly and time how long it takes to find those values
@@ -189,7 +189,7 @@ void containerComparisons()
             int index = randGenerator() % (( numOfValues + 1 ));
             int num = values[index]; 
             bSearchTime += searchBTree(btree, values, num); 
-            vecSearchTime += searchVector(randInsert, values, num); 
+            //vecSearchTime += searchVector(randInsert, values, num); 
             mapSearchTime += searchMap(intMap, values, num); 
         }
         bSearchTime = bSearchTime / 10; 
