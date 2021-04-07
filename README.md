@@ -1,8 +1,8 @@
-Design Manual
+**Design Manual **
 
 Due to the time constraints of this project, it interacts with the user using a command line interface. 
 
-Command line interface:
+**Command line interface: **
 
 To build the project, run the command: make 
 
@@ -10,7 +10,7 @@ This will create an executable file called main
 
 To start the program run: ./main
 
-Commands within the program:
+**Commands within the program:**
 
 The goal of the program is to build an interface to a memory-based database for data that is sorted using dated timestamps, which would allow the user to insert, select, and delete from that database using a simple interface. It works by the program ingesting a simple CSV file, that contains the primary key as the first column of the database. The only caveat is that for the first implementation, the primary key must be datestamp that is in the format %d/%m/%Y i.e. 12/7/1998. (For an example file, please look at top_chart_data.csv)
 
@@ -41,8 +41,6 @@ SELECT date, rank, song, artist FROM table WHERE date = 17/12/1966
 |17/12/1966|1   |Winchester Cathedral|The New Vaudeville Band|
 +----------+----+--------------------+-----------------------+
 
-
-
 Like in SQL, you can use the * command in the select query to take all columns from the table. E.g:
 
 SELECT * FROM table WHERE date = 17/12/1966
@@ -52,6 +50,5 @@ SELECT * FROM table WHERE date = 17/12/1966
 +-----------------------+----------+---------+---------+----+--------------------+--------------+
 |The New Vaudeville Band|17/12/1966|3        |1        |1   |Winchester Cathedral|8             |
 +-----------------------+----------+---------+---------+----+--------------------+--------------+
- 
 
 If you do not specify a where clause, all rows of the table would be presented. For our interface, in order to minimise the amount that is printed on the console, considering the number of rows in the table could be infinite, we only will print the first 50 rows of the table. 
