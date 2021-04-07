@@ -30,6 +30,7 @@ class BTree
         void clear(); /* clears the tree */
         int insert(T); /* inserts a key into the tree */ 
         T remove(T); /* removes a key from tree */ 
+        bool isHeightBalanced(); /* return height of tree */
         BNodeKey<T>* search(T); /* returns the node associated with key */
         void traverse(); /* traverses the tree */
         std::vector<BNodeKey<T>*> searchRange(T lowKey, T highKey); /* finds values in a range */
@@ -37,6 +38,8 @@ class BTree
     private:
         void splitChild(BNode<T> *x, int i); 
         void traverse(BNode<T> *curr); /* traverses the tree */
+        int height(BNode<T> *curr); /* calculate height of tree from root */
+        bool isHeightBalanced(BNode<T> *curr); /* return height of tree */
 
 };
 

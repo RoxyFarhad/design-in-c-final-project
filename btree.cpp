@@ -1,4 +1,7 @@
 #include "btree.hpp"
+#include <math.h> 
+#include <algorithm>
+#include <cmath>
 
 template <typename T>
 BTree<T>::BTree(int m) 
@@ -121,6 +124,7 @@ int BTree<T>::insert(T key)
         int keyInd = curr->keys->size() - 1;  
         
         while(keyInd >= 0 && (compare(key, curr->keys->at(keyInd)->key) < 0)) {
+            // std::cout << curr->keys->at(keyInd)->key << ", " << key << std::endl;
             keyInd--; 
         }
         
@@ -150,7 +154,45 @@ T BTree<T>::remove(T key)
 }
 
 template <typename T>
-void BTree<T>::traverse() { traverse(this->root); }
+int BTree<T>::height(BNode<T> *curr)
+{
+    if(curr->isLeaf == true) 
+    {
+        return 0;
+    }
+    int leftHt = height(curr->children->at(0));
+    int rightHt = height(curr->children->at(curr->children->size()-1));
+    int curHt = std::max(leftHt, rightHt) + 1;
+    return curHt;
+}
+
+template <typename T>
+bool BTree<T>::isHeightBalanced()
+{
+    return isHeightBalanced(this->root);
+}
+
+template <typename T>
+bool BTree<T>::isHeightBalanced(BNode<T> *curr)
+{   
+    if(curr->isLeaf == true)
+    {
+        return true;
+    }
+    int leftHt = height(curr->children->at(0));
+    int rightHt = height(curr->children->at(curr->children->size()-1));
+    if(std::abs(leftHt - rightHt) > 1)
+    {
+        return false;
+    }
+    return isHeightBalanced(curr->children->at(0)) && isHeightBalanced(curr->children->at(curr->children->size()-1));
+}
+
+template <typename T>
+void BTree<T>::traverse() 
+{ 
+    traverse(this->root); 
+}
 
 template <typename T>
 void BTree<T>::traverse(BNode<T> *curr)
@@ -158,15 +200,42 @@ void BTree<T>::traverse(BNode<T> *curr)
     int ind = 0; 
     while(ind < curr->keys->size()) 
     {
-
+        
         if(curr->isLeaf == false) {
+            // all non leaf nodes except root must have at least m/2 children
+            if(curr != root) {
+            assert(curr->children->size() >= m / 2);
+            }
+
+            // a non leafnode with n-1 keys must have n number of children
+            assert(curr->children->size() == curr->keys->size() + 1);
+
             // traverse the children in order
             traverse(curr->children->at(ind));
         }
-        std::cout << "(";
-        printKey(curr->keys->at(ind)->key);
-        std::cout << ", " << curr->keys->at(ind)->index << ")" << std::endl;
-        ind++; 
+        ind++;
+
+        // all nodes except root must have between ceil(m/2)-1 and 2m keys (?)
+        if(curr != root) {
+            // std::cout << "# of keys: " << curr->keys->size() << std::endl;
+            assert(curr->keys->size() >= ceil(m/2)-1 && curr->keys->size() <= 2 * m); 
+        };
+
+        // the root has between 1 and 2m-1 keys
+        assert(root->keys->size() >= 1 && root->keys->size() <= 2 * m - 1);
+
+        // if root node is non leaf node, then is must have at least 2 children
+        if(root->isLeaf == false){
+            assert(root->children->size() >= 2);
+        };
+
+        // all key values are in ascending order
+        if(curr->keys->size() > 1){
+                int last = curr->keys->at(0)->key;
+                for(int i = 1; i<curr->keys->size(); i++)
+                    // std::cout << curr->keys->at(i)->key << std::endl;
+                    assert(last <= curr->keys->at(i)->key);
+        };
     };  
 
     if(curr->isLeaf == false) {
