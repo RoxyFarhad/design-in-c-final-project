@@ -6,7 +6,9 @@
 using namespace std;
 
 int main() {
-    int m = 2;
+
+    // testing date conversions
+
     Interface interface; 
     interface.run(); 
 }
