@@ -34,28 +34,10 @@ COMMANDS:
 If a select query is specified, then it would present a table on the console with the results of the query. 
 For example, the following query with the top_chart_data.csv file would result in the following console output:
 
-<code>
-SELECT date, rank, song, artist FROM table WHERE date = 17/12/1966
- 
-+----------+----+--------------------+-----------------------+
-|date      |rank|song                |artist                 |
-+----------+----+--------------------+-----------------------+
-|17/12/1966|1   |Winchester Cathedral|The New Vaudeville Band|
-+----------+----+--------------------+-----------------------+
-
-</code>
+![Screenshot](/images/select2.png)
 
 Like in SQL, you can use the * command in the select query to take all columns from the table. E.g:
 
-<code>
-SELECT * FROM table WHERE date = 17/12/1966
- 
-+-----------------------+----------+---------+---------+----+--------------------+--------------+
-|artist                 |date      |last-week|peak-rank|rank|song                |weeks-on-board|
-+-----------------------+----------+---------+---------+----+--------------------+--------------+
-|The New Vaudeville Band|17/12/1966|3        |1        |1   |Winchester Cathedral|8             |
-+-----------------------+----------+---------+---------+----+--------------------+--------------+
-
-</code>
+![Screenshot](/images/select1.png)
 
 If you do not specify a where clause, all rows of the table would be presented. For our interface, in order to minimise the amount that is printed on the console, considering the number of rows in the table could be infinite, we only will print the first 50 rows of the table. 
