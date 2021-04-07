@@ -302,7 +302,28 @@ void Interface::insert(std::string line, BTree<Interface::date_time> *btree)
 
 void Interface::remove(std::string line, BTree<Interface::date_time> *btree)
 {
-
+    std::vector<std::string> tokens; 
+    std::string token; 
+    size_t pos = 0; 
+    while((pos = line.find(' ')) != std::string::npos){
+        token = line.substr(0, pos); 
+        line.erase(0, pos + 1); 
+        if(token == "="){
+            if(line[line.length() - 1] == '\n'){
+                line.erase(line.length() - 1);
+            }
+            token = line; 
+        }
+    }
+    // at this point token should be the PK value
+    // convert the date into comparable structure
+    std::tm tm = {};
+    std::istringstream ss(token);
+    ss >> std::get_time(&tm, "%d-%m-%Y");
+    Interface::date_time dt = std::chrono::system_clock::from_time_t(timegm(&tm));
+    BNodeKey<Interface::date_time> *bKey = btree->search(dt);
+    btree->remove(bKey->key); 
+    indices->erase(bKey->index);  
 }
 
 void Interface::printSelect(std::vector<std::string> columns, std::vector<std::vector<std::string>> values) 
