@@ -33,16 +33,23 @@ class BTree
         BNodeKey<T>* search(T); /* returns the node associated with key */
         void traverse(); /* traverses the tree */
         std::vector<BNodeKey<T>*> searchRange(T lowKey, T highKey); /* finds values in a range */
-        
-    private:
-        void splitChild(BNode<T> *x, int i); 
-        void traverse(BNode<T> *curr); /* traverses the tree */
-        char merge(BNode<T> *curr, T predKey, T succKey);
-        T deleteNode(BNode<T> *curr, T key);
-        char fixChildSize(BNode<T> *parent, T key);
+        void deletion(T k);
         T findIndex(BNode<T> *curr, T key);
-        BNode<T>* getNode(T key);
 
+    
+    private:
+        BNode<T>* getNode(T key);
+        void splitChild(BNode<T> *x, int i); 
+        void deletion(BNode<T> *curr, T k); 
+        void traverse(BNode<T> *curr); /* traverses the tree */
+        void removeFromLeaf(BNode<T> *curr, T idx);
+        void removeFromNonLeaf(BNode<T> *curr, T idx);
+        T getPredecessor(BNode<T> *curr, T idx);
+        T getSuccessor(BNode<T> *curr, T idx);
+        void fill(BNode<T> *curr, T idx);
+        void borrowFromPrev(BNode<T> *curr, int idx);
+        void borrowFromNext(BNode<T> *curr, int idx);
+        void merge(BNode<T> *curr, int idx);
 };
 
 

@@ -23,7 +23,9 @@ int main() {
     for(int i = 1; i < 16; i++)
     {
         cout << i << endl;
-        btree.remove(i);
+        btree.traverse();
+        cout << i << endl;
+        btree.deletion(i);
         // btree.traverse();
 
     }
