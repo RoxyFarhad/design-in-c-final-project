@@ -153,7 +153,7 @@ int BTree<T>::insert(T key)
 }
 
 template <typename T>
-T BTree<T>::findIndex(BNode<T> *curr, T key)
+int BTree<T>::findIndex(BNode<T> *curr, T key)
 {
     unsigned keyInd = 0;
     while (keyInd < curr->keys->size() && (compare(key, curr->keys->at(keyInd)->key) > 0) ){
@@ -299,7 +299,7 @@ void BTree<T>::deletion(BNode<T> *curr, T k) {
 
 
     std::cout << curr->keys->size();
-    T idx = findIndex(curr, k);
+    int idx = findIndex(curr, k);
     std::cout << "INDEX"<< idx;
 
     if (idx < curr->keys->size() && curr->keys->at(idx)->key == k ) {
@@ -318,7 +318,9 @@ void BTree<T>::deletion(BNode<T> *curr, T k) {
     else {
         std::cout << "here";
         if (curr->children->size()==0) {
-            std::cout << "The key " << k << " is does not exist in the tree\n";
+            std::cout << "The key "; 
+            this->printKey(k); 
+            std::cout << " is does not exist in the tree\n";
             return;
         }
     
@@ -343,9 +345,45 @@ void BTree<T>::deletion(BNode<T> *curr, T k) {
     }
 }
 
+template <typename T>
+bool BTree<T>::isHeightBalanced()
+{
+    return isHeightBalanced(this->root);
+}
+
+template <typename T>
+bool BTree<T>::isHeightBalanced(BNode<T> *curr)
+{   
+    if(curr->isLeaf == true)
+    {
+        return true;
+    }
+    int leftHt = height(curr->children->at(0));
+    int rightHt = height(curr->children->at(curr->children->size()-1));
+    if(std::abs(leftHt - rightHt) > 1)
+    {
+        return false;
+    }
+    return isHeightBalanced(curr->children->at(0)) && isHeightBalanced(curr->children->at(curr->children->size()-1));
+}
+
+template <typename T>
+int BTree<T>::height(BNode<T> *curr)
+{
+    if(curr->isLeaf == true) 
+    {
+        return 0;
+    }
+    int leftHt = height(curr->children->at(0));
+    int rightHt = height(curr->children->at(curr->children->size()-1));
+    int curHt = std::max(leftHt, rightHt) + 1;
+    return curHt;
+}
+
+
 // Remove from the leaf
 template <typename T>
-void BTree<T>::removeFromLeaf(BNode<T> *curr, T idx) {
+void BTree<T>::removeFromLeaf(BNode<T> *curr, int idx) {
 
     std::cout << "removefromleaf()" << std::endl;
   
@@ -359,13 +397,14 @@ void BTree<T>::removeFromLeaf(BNode<T> *curr, T idx) {
 
 // Delete from non leaf node
 template <typename T>
-void BTree<T>::removeFromNonLeaf(BNode<T> *curr, T idx) {
+void BTree<T>::removeFromNonLeaf(BNode<T> *curr, int idx) {
 
   std::cout << "removefromnonleaf()" << std::endl;
 
   T k = curr->keys->at(idx)->key;
   curr->children->at(idx)->print();
-  std::cout << k << " " <<curr->children->at(idx)->keys->size() << " " << m;
+  this->printKey(k); 
+  std::cout << " " << curr->children->at(idx)->keys->size() << " " << m;
 
   if (curr->children->at(idx)->keys->size() >= m) {
     T pred = getPredecessor(curr, idx);
@@ -387,7 +426,7 @@ void BTree<T>::removeFromNonLeaf(BNode<T> *curr, T idx) {
 }
 
 template <typename T>
-T BTree<T>::getPredecessor(BNode<T> *curr, T idx) {
+T BTree<T>::getPredecessor(BNode<T> *curr, int idx) {
   std::cout << "getPred()" << std::endl;
   BNode<T> *child = curr->children->at(idx);
   while (child->keys->size()>0)
@@ -397,7 +436,7 @@ T BTree<T>::getPredecessor(BNode<T> *curr, T idx) {
 }
 
 template <typename T>
-T BTree<T>::getSuccessor(BNode<T> *curr, T idx) {
+T BTree<T>::getSuccessor(BNode<T> *curr, int idx) {
   BNode<T> *child = curr->children->at(idx + 1);
   while (child->keys->size()>0)
     child = child->children->at(0);
@@ -406,7 +445,7 @@ T BTree<T>::getSuccessor(BNode<T> *curr, T idx) {
 }
 
 template <typename T>
-void BTree<T>::fill(BNode<T> *curr, T idx) {
+void BTree<T>::fill(BNode<T> *curr, int idx) {
   std::cout << "fill";
   if (idx != 0 && curr->children->at(idx - 1)->keys->size() >= m)
     borrowFromPrev(curr, idx);

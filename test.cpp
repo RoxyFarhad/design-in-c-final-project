@@ -63,6 +63,20 @@ float insertVector(std::vector<int> &intVec, std::vector<int> values)
     return time_span.count();
 }
 
+float insertSet(std::set<int> &intSet, std::vector<int> values)
+{
+    std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+    for(int i = 0; i < values.size(); i++)
+    {    
+        intSet.insert(values[i]); 
+    }
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now(); 
+    std::chrono::duration<float, std::milli> time_span = end - start;
+
+    return time_span.count();
+}
+
 float insertMap(std::map<int, int> &intMap, std::vector<int> values)
 {
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
@@ -112,8 +126,17 @@ float searchBTree(BTree<int> &btree, std::vector<int> &values, int value)
 float searchMap(std::map<int, int> &intMap, std::vector<int> &values, int value)
 {
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-    std::vector<int>::iterator it; 
     int x = intMap[value]; 
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now(); 
+    std::chrono::duration<float, std::milli> time_span = end - start;
+    return time_span.count();
+}
+
+float searchSet(std::set<int> &intSet, std::vector<int> &values, int value)
+{
+    std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+    std::set<int>::iterator it; 
+    it = intSet.find(value); 
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now(); 
     std::chrono::duration<float, std::milli> time_span = end - start;
     return time_span.count();
@@ -156,7 +179,7 @@ void containerComparisons()
         BTree<int> btree = BTree<int>(m, &compare, &printInt); 
         std::vector<int> intVec; 
         std::map<int, int> intMap; 
-
+        std::set<int> intSet; 
         std::minstd_rand0 randGenerator(1);
         std::vector<int> values; 
         std::vector<int> randInsert; 
@@ -169,36 +192,40 @@ void containerComparisons()
             randInsert.push_back(num);  
         }
 
-        float bTime = insertBTree(btree, values);
+        //float bTime = insertBTree(btree, values);
         //float vecTime = insertVector(intVec, values); 
         //float mapTime = insertMap(intMap, values); 
         // float listTime = insertList(values); 
+        float setTime = insertSet(intSet, values); 
         //std::cout << mapTime << std::endl; 
         // std::cout << "Number of Values: " << numOfValues << std::endl; 
         //std::cout << bTime << std::endl; 
         // std::cout << "vec-insert-time: " << vecTime << std::endl; 
-
+        // std::cout << setTime << std::endl; 
         // choose 10 values randomly and time how long it takes to find those values
         // because vector is linear search - reinsert the values in random order as that doesn't matter for search
 
         float bSearchTime = 0; 
         float vecSearchTime = 0;
         float mapSearchTime = 0; 
+        float setSearchTime = 0; 
         for(int i = 0; i < 10; i++)
         {
             int index = randGenerator() % (( numOfValues + 1 ));
             int num = values[index]; 
-            bSearchTime += searchBTree(btree, values, num); 
+            //bSearchTime += searchBTree(btree, values, num); 
             //vecSearchTime += searchVector(randInsert, values, num); 
-            mapSearchTime += searchMap(intMap, values, num); 
+            //mapSearchTime += searchMap(intMap, values, num); 
+            setSearchTime += searchSet(intSet, values, num);
         }
         bSearchTime = bSearchTime / 10; 
         vecSearchTime = vecSearchTime / 10; 
         mapSearchTime = mapSearchTime / 10; 
+        setSearchTime = setSearchTime / 10; 
         // std::cout << "btree-search-time: " << bSearchTime << std::endl; 
         // std::cout << "vec-search-time: " << vecSearchTime << std::endl; 
         // randomly choose an inserted value and check how long it would take to find it given N values
-        std::cout << mapSearchTime << std::endl; 
+        std::cout << setSearchTime << std::endl; 
 
     }
 }

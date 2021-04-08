@@ -321,7 +321,7 @@ void Interface::remove(std::string line, BTree<Interface::date_time> *btree)
     ss >> std::get_time(&tm, "%d/%m/%Y");
     Interface::date_time dt = std::chrono::system_clock::from_time_t(timegm(&tm));
     BNodeKey<Interface::date_time> *bKey = btree->search(dt);
-    btree->remove(bKey->key); 
+    btree->deletiona(bKey->key); 
     indices->erase(bKey->index);  
 }
 
