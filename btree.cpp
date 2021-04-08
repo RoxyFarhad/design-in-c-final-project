@@ -153,46 +153,49 @@ int BTree<T>::insert(T key)
 }
 
 template <typename T>
-T BTree<T>::remove(T key)
+T BTree<T>::findIndex(BNode<T> *curr, T key)
 {
-    this->elemCount -= 1; 
-    return key; 
+    unsigned keyInd = 0;
+    while (keyInd < curr->keys->size() && (compare(key, curr->keys->at(keyInd)->key) > 0) ){
+        keyInd++;
+    } 
+
+    if (keyInd < curr->keys->size() && compare(key, curr->keys->at(keyInd)->key)==0){
+        // std::cout << "Index found: " << keyInd << std::endl;
+      return keyInd;
+    }
+    return -1;
+
 }
 
 template <typename T>
-int BTree<T>::height(BNode<T> *curr)
+BNode<T>* BTree<T>::getNode(T key)
 {
-    if(curr->isLeaf == true) 
-    {
-        return 0;
+    BNode<T> *curr = root; 
+
+    while(true) {
+
+        int i = 0; 
+        while ( i < curr->keys->size() && (compare(key, curr->keys->at(i)->key) > 0) ){
+            i++;
+        }
+        
+        if( i < curr->keys->size() && compare(key, curr->keys->at(i)->key) == 0 ) {
+            curr->print();
+            std::cout << "returning";
+            return curr;
+        }
+
+        else if(curr->isLeaf) {
+            return nullptr; 
+        }
+        
+        else {
+            curr = curr->children->at(i);
+        }
     }
-    int leftHt = height(curr->children->at(0));
-    int rightHt = height(curr->children->at(curr->children->size()-1));
-    int curHt = std::max(leftHt, rightHt) + 1;
-    return curHt;
 }
 
-template <typename T>
-bool BTree<T>::isHeightBalanced()
-{
-    return isHeightBalanced(this->root);
-}
-
-template <typename T>
-bool BTree<T>::isHeightBalanced(BNode<T> *curr)
-{   
-    if(curr->isLeaf == true)
-    {
-        return true;
-    }
-    int leftHt = height(curr->children->at(0));
-    int rightHt = height(curr->children->at(curr->children->size()-1));
-    if(std::abs(leftHt - rightHt) > 1)
-    {
-        return false;
-    }
-    return isHeightBalanced(curr->children->at(0)) && isHeightBalanced(curr->children->at(curr->children->size()-1));
-}
 
 template <typename T>
 void BTree<T>::traverse() 
@@ -212,13 +215,15 @@ void BTree<T>::traverse(BNode<T> *curr)
             if(curr != root) {
             assert(curr->children->size() >= m / 2);
             }
-
             // a non leafnode with n-1 keys must have n number of children
             assert(curr->children->size() == curr->keys->size() + 1);
 
             // traverse the children in order
             traverse(curr->children->at(ind));
         }
+        std::cout << "(";
+        printKey(curr->keys->at(ind)->key);
+        std::cout << ", " << curr->keys->at(ind)->index << ")" << std::endl;
         ind++;
 
         // all nodes except root must have between ceil(m/2)-1 and 2m keys (?)
@@ -247,6 +252,7 @@ void BTree<T>::traverse(BNode<T> *curr)
     if(curr->isLeaf == false) {
         // traverse the last child
         traverse(curr->children->at(ind));
+        
     }
 }
 
@@ -278,6 +284,238 @@ BNodeKey<T>* BTree<T>::search(T key)
     }
 }
 
+template <typename T>
+void BTree<T>::deletiona(T k) 
+{ 
+    BNode<T> *curr = getNode(k);
+    curr->print();
+    return deletion(curr, k);
+}
+
+
+// Deletion operation
+template <typename T>
+void BTree<T>::deletion(BNode<T> *curr, T k) {
+
+
+    std::cout << curr->keys->size();
+    T idx = findIndex(curr, k);
+    std::cout << "INDEX"<< idx;
+
+    if (idx < curr->keys->size() && curr->keys->at(idx)->key == k ) {
+        std::cout << "hello";
+        curr->print();
+        if (curr->children->size()==0){
+            removeFromLeaf(curr, idx);
+            std::cout << "completed";
+        }
+        else{
+            curr->print();
+            removeFromNonLeaf(curr, idx);
+            }
+        std::cout << "backhere";
+    } 
+    else {
+        std::cout << "here";
+        if (curr->children->size()==0) {
+            std::cout << "The key " << k << " is does not exist in the tree\n";
+            return;
+        }
+    
+        std::cout << "HELLO";
+        
+        bool flag = ((idx == curr->keys->size()) ? true : false);
+        std::cout << flag << curr->children->at(idx)->keys->size();
+        
+
+        if (curr->children->at(idx)->keys->size() < m){
+            fill(curr, idx);
+        }
+
+        if (flag && idx > curr->keys->size()){
+            deletion(curr->children->at(idx - 1), k);
+        }
+        else{
+            deletion(curr->children->at(idx), k);
+        }
+
+      return;
+    }
+}
+
+// Remove from the leaf
+template <typename T>
+void BTree<T>::removeFromLeaf(BNode<T> *curr, T idx) {
+
+    std::cout << "removefromleaf()" << std::endl;
+  
+    std::cout<< "index: " << idx << "n: " << curr->keys->size();
+
+    curr->removeKey(idx, idx+1);
+    curr->print();
+  
+    return;
+}
+
+// Delete from non leaf node
+template <typename T>
+void BTree<T>::removeFromNonLeaf(BNode<T> *curr, T idx) {
+
+  std::cout << "removefromnonleaf()" << std::endl;
+
+  T k = curr->keys->at(idx)->key;
+  curr->children->at(idx)->print();
+  std::cout << k << " " <<curr->children->at(idx)->keys->size() << " " << m;
+
+  if (curr->children->at(idx)->keys->size() >= m) {
+    T pred = getPredecessor(curr, idx);
+    curr->keys->at(idx)->key = pred;
+    deletion(curr->children->at(idx), pred);
+  }
+
+  else if (curr->children->at(idx + 1)->keys->size() >= m) {
+    T succ = getSuccessor(curr, idx);
+    curr->keys->at(idx)->key = succ;
+    deletion(curr->children->at(idx + 1), succ);
+  }
+
+  else {
+    merge(curr, idx);
+    deletion(curr->children->at(idx), k);
+  }
+  return;
+}
+
+template <typename T>
+T BTree<T>::getPredecessor(BNode<T> *curr, T idx) {
+  std::cout << "getPred()" << std::endl;
+  BNode<T> *child = curr->children->at(idx);
+  while (child->keys->size()>0)
+    child = child->children->at(child->keys->size());
+
+  return child->keys->at(child->keys->size() - 1)->key;
+}
+
+template <typename T>
+T BTree<T>::getSuccessor(BNode<T> *curr, T idx) {
+  BNode<T> *child = curr->children->at(idx + 1);
+  while (child->keys->size()>0)
+    child = child->children->at(0);
+
+  return child->keys->at(0)->key;
+}
+
+template <typename T>
+void BTree<T>::fill(BNode<T> *curr, T idx) {
+  std::cout << "fill";
+  if (idx != 0 && curr->children->at(idx - 1)->keys->size() >= m)
+    borrowFromPrev(curr, idx);
+
+  else if (idx != curr->keys->size() && curr->children->at(idx + 1)->keys->size() >= m)
+    borrowFromNext(curr, idx);
+
+  else {
+    if (idx != curr->keys->size())
+      merge(curr, idx);
+    else
+      merge(curr, idx - 1);
+  }
+  return;
+}
+
+// Borrow from previous
+template <typename T>
+void BTree<T>::borrowFromPrev(BNode<T> *curr, int idx) {
+  BNode<T> *child = curr->children->at(idx);
+  BNode<T> *sibling = curr->children->at(idx - 1);
+
+  for (int i = child->keys->size() - 1; i >= 0; --i)
+    child->keys->at(i + 1) = child->keys->at(i);
+
+  if (child->children->size()>0) {
+    for (int i = child->keys->size(); i >= 0; --i)
+      child->children->at(i + 1) = child->children->at(i);
+  }
+
+  child->keys->at(0) = curr->keys->at(idx - 1);
+
+  if (child->children->size()>0)
+    child->children->at(0) = sibling->children->at(sibling->keys->size());
+
+  curr->keys->at(idx - 1) = sibling->keys->at(sibling->keys->size() - 1);
+
+//   child->keys->size() += 1;
+  sibling->removeKey(sibling->keys->size(), sibling->keys->size()+1);
+
+  return;
+}
+
+// Borrow from the next
+template <typename T>
+void BTree<T>::borrowFromNext(BNode<T> *curr, int idx) {
+  BNode<T> *child = curr->children->at(idx);
+  BNode<T> *sibling = curr->children->at(idx + 1);
+
+  child->keys->at(child->keys->size()) = curr->keys->at(idx);
+
+  if (child->children->size()>0){
+        child->children->at(child->keys->size() + 1) = sibling->children->at(0);
+  }
+
+  curr->keys->at(idx) = sibling->keys->at(0);
+
+  for (int i = 1; i < sibling->keys->size(); ++i)
+    sibling->keys->at(i - 1) = sibling->keys->at(i);
+
+  if (sibling->children->size()>0) {
+    for (int i = 1; i <= sibling->keys->size(); ++i)
+      sibling->children->at(i - 1) = sibling->children->at(i);
+  }
+
+
+//   child->keys->size() += 1;
+  sibling->removeKey(sibling->keys->size(), sibling->keys->size()+1);
+
+  return;
+}
+
+
+template <typename T>
+void BTree<T>::merge(BNode<T> *curr, int idx) {
+  std::cout << "merge()" << std::endl;
+  BNode<T> *child = curr->children->at(idx);
+  BNode<T> *sibling = curr->children->at(idx + 1);
+
+  child->insertKey(curr->keys->at(idx)->key, curr->keys->at(idx)->index);
+
+  for (int i = 0; i < sibling->keys->size(); ++i){
+    child->insertKey(sibling->keys->at(i)->key, sibling->keys->at(i)->index);
+  }
+
+  if (sibling->children->size()>0) {
+    for (int i = 0; i <= sibling->keys->size(); ++i){
+      child->insertChild(child->children->size(), sibling->children->at(i));
+    }
+  }
+
+  for (int i = idx + 1; i < curr->keys->size(); ++i){
+    curr->keys->at(i - 1)->key = curr->keys->at(i)->key;
+    curr->keys->at(i - 1)->index = curr->keys->at(i)->index;
+  }
+  curr->removeKey(curr->keys->size()-1, curr->keys->size());
+
+  // Removing child
+  curr->removeChild(idx+1, idx+2);
+
+  curr->print();
+  
+  for(int i = 0; i < curr->children->size(); i++){
+    curr->children->at(i)->print();
+  }
+
+  delete (sibling);
+  return;
+}
 
 
 

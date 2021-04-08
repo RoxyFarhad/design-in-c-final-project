@@ -35,14 +35,28 @@ class BTree
 
         BNodeKey<T>* search(T); /* returns the node associated with key */
         void traverse(); /* traverses the tree */
-        bool isHeightBalanced(); /* return height of tree */
+        std::vector<BNodeKey<T>*> searchRange(T lowKey, T highKey); /* finds values in a range */
+        void deletiona(T k);
+        void deletion(BNode<T> *curr, T k); 
+        T findIndex(BNode<T> *curr, T key);
+        BNode<T>* getNode(T key);
 
-        
+    
     private:
+
         void splitChild(BNode<T> *x, int i); 
         void traverse(BNode<T> *curr); /* traverses the tree */
-        int height(BNode<T> *curr); /* calculate height of tree from root */
-        bool isHeightBalanced(BNode<T> *curr); /* return height of tree */
+        void removeFromLeaf(BNode<T> *curr, T idx);
+        void removeFromNonLeaf(BNode<T> *curr, T idx);
+        T getPredecessor(BNode<T> *curr, T idx);
+        T getSuccessor(BNode<T> *curr, T idx);
+        void fill(BNode<T> *curr, T idx);
+        void borrowFromPrev(BNode<T> *curr, int idx);
+        void borrowFromNext(BNode<T> *curr, int idx);
+        void merge(BNode<T> *curr, int idx);
+        char fixChildSize(BNode<T> *parent, T index);
+        T deleteNode(BNode<T> *curr, T key);
+        // char merge(BNode<T> *curr, T predKey, T succKey);
 };
 
 
