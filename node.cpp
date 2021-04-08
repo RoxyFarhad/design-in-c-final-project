@@ -12,8 +12,6 @@ BNode<T>::BNode(int m, int (*compFunc)(T, T), void (*print)(T))
     this->keys = new std::vector< BNodeKey<T> *>();  
     this->children = new std::vector<BNodeType *>(); 
     this->m = m; 
-    this->maxKeys = m - 1; 
-    this->minKeys = (m - 1)/2; 
 }
 
 /*
