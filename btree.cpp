@@ -1,9 +1,7 @@
 #include "btree.hpp"
 #include <math.h> 
-
-#define NEW_ROOT 2
-#define MODIFIED_NOT_ROOT 1
-#define NOT_MODIFIED 0
+#include <algorithm>
+#include <cmath>
 
 template <typename T>
 BTree<T>::BTree(int m) 
@@ -13,6 +11,7 @@ BTree<T>::BTree(int m)
     printKey = nullptr; 
     this->m = m; 
     index = 0; 
+    elemCount = 0; 
 }
 
 template <typename T>   
@@ -23,6 +22,7 @@ BTree<T>::BTree( int t, int (*compFunc)(T, T), void (*print)(T) )
     this->printKey = print; 
     this->root = nullptr;
     this->index = 0; 
+    elemCount = 0; 
 }
 
 template <typename T>
@@ -35,6 +35,18 @@ template <typename T>
 void BTree<T>::clear()
 {
     
+}
+
+template <typename T> 
+int BTree<T>::size()
+{
+    return this->elemCount; 
+}
+
+template <typename T>
+bool BTree<T>::empty()
+{
+    return (this->elemCount == 0); 
 }
 
 /*
@@ -86,16 +98,6 @@ void BTree<T>::splitChild(BNode<T> *x, int i)
 
     // add the new node to the parent
     x->insertChild(childInd+1, newNode);
-    
-    // std::cout << "x: ";
-    // x->print();
-    // std::cout << "\n";
-    // std::cout << "toSplit: ";
-    // toSplit->print();
-    // std::cout << "\n";
-    // std::cout << "newNode: ";
-    // newNode->print(); 
-    // std::cout << "\n";
 
 }
 
@@ -107,6 +109,7 @@ int BTree<T>::insert(T key)
 {   
     this->index+=1; 
     int ind = this->index;
+    this->elemCount += 1; 
 
     if(this->root == nullptr) {
         this->root = new BNode<T>(m, compare, printKey); 
@@ -212,9 +215,6 @@ void BTree<T>::traverse(BNode<T> *curr)
             if(curr != root) {
             assert(curr->children->size() >= m / 2);
             }
-            
-            curr->print();
-            
             // a non leafnode with n-1 keys must have n number of children
             assert(curr->children->size() == curr->keys->size() + 1);
 
@@ -247,8 +247,6 @@ void BTree<T>::traverse(BNode<T> *curr)
                     // std::cout << curr->keys->at(i)->key << std::endl;
                     assert(last <= curr->keys->at(i)->key);
         };
-
-        
     };  
 
     if(curr->isLeaf == false) {
