@@ -288,7 +288,6 @@ template <typename T>
 void BTree<T>::deletiona(T k) 
 { 
     BNode<T> *curr = getNode(k);
-    curr->print();
     return deletion(curr, k);
 }
 
@@ -297,26 +296,19 @@ void BTree<T>::deletiona(T k)
 template <typename T>
 void BTree<T>::deletion(BNode<T> *curr, T k) {
 
-
-    std::cout << curr->keys->size();
     int idx = findIndex(curr, k);
-    std::cout << "INDEX"<< idx;
 
     if (idx < curr->keys->size() && curr->keys->at(idx)->key == k ) {
-        std::cout << "hello";
-        curr->print();
+
         if (curr->children->size()==0){
             removeFromLeaf(curr, idx);
-            std::cout << "completed";
         }
         else{
             curr->print();
             removeFromNonLeaf(curr, idx);
             }
-        std::cout << "backhere";
     } 
     else {
-        std::cout << "here";
         if (curr->children->size()==0) {
             std::cout << "The key "; 
             this->printKey(k); 
@@ -324,7 +316,6 @@ void BTree<T>::deletion(BNode<T> *curr, T k) {
             return;
         }
     
-        std::cout << "HELLO";
         
         bool flag = ((idx == curr->keys->size()) ? true : false);
         std::cout << flag << curr->children->at(idx)->keys->size();
@@ -385,12 +376,9 @@ int BTree<T>::height(BNode<T> *curr)
 template <typename T>
 void BTree<T>::removeFromLeaf(BNode<T> *curr, int idx) {
 
-    std::cout << "removefromleaf()" << std::endl;
-  
-    std::cout<< "index: " << idx << "n: " << curr->keys->size();
-
+    
     curr->removeKey(idx, idx+1);
-    curr->print();
+
   
     return;
 }
@@ -399,13 +387,11 @@ void BTree<T>::removeFromLeaf(BNode<T> *curr, int idx) {
 template <typename T>
 void BTree<T>::removeFromNonLeaf(BNode<T> *curr, int idx) {
 
-  std::cout << "removefromnonleaf()" << std::endl;
+ 
 
   T k = curr->keys->at(idx)->key;
-  curr->children->at(idx)->print();
-  this->printKey(k); 
-  std::cout << " " << curr->children->at(idx)->keys->size() << " " << m;
 
+  
   if (curr->children->at(idx)->keys->size() >= m) {
     T pred = getPredecessor(curr, idx);
     curr->keys->at(idx)->key = pred;
@@ -427,7 +413,7 @@ void BTree<T>::removeFromNonLeaf(BNode<T> *curr, int idx) {
 
 template <typename T>
 T BTree<T>::getPredecessor(BNode<T> *curr, int idx) {
-  std::cout << "getPred()" << std::endl;
+
   BNode<T> *child = curr->children->at(idx);
   while (child->keys->size()>0)
     child = child->children->at(child->keys->size());
@@ -446,7 +432,7 @@ T BTree<T>::getSuccessor(BNode<T> *curr, int idx) {
 
 template <typename T>
 void BTree<T>::fill(BNode<T> *curr, int idx) {
-  std::cout << "fill";
+
   if (idx != 0 && curr->children->at(idx - 1)->keys->size() >= m)
     borrowFromPrev(curr, idx);
 
@@ -521,7 +507,7 @@ void BTree<T>::borrowFromNext(BNode<T> *curr, int idx) {
 
 template <typename T>
 void BTree<T>::merge(BNode<T> *curr, int idx) {
-  std::cout << "merge()" << std::endl;
+
   BNode<T> *child = curr->children->at(idx);
   BNode<T> *sibling = curr->children->at(idx + 1);
 
@@ -546,11 +532,7 @@ void BTree<T>::merge(BNode<T> *curr, int idx) {
   // Removing child
   curr->removeChild(idx+1, idx+2);
 
-  curr->print();
-  
-  for(int i = 0; i < curr->children->size(); i++){
-    curr->children->at(i)->print();
-  }
+
 
   delete (sibling);
   return;
