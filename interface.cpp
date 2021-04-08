@@ -117,7 +117,7 @@ void Interface::select(std::string line, BTree<Interface::date_time> *btree)
             lineCopy.erase(0, pos + 1);
         }
     }
-    
+
     // parse second part - where clause filter
     std::set<Interface::date_time> dates;  
 
@@ -200,7 +200,8 @@ void Interface::select(std::string line, BTree<Interface::date_time> *btree)
 void Interface::insert(std::string line, BTree<Interface::date_time> *btree)
 {   
     // -1 indicates that there are no values being added to that column
-    std::vector<int> validIndices (this->columns->size(), 0);     
+    std::vector<std::string> validIndices; 
+    std::vector<std::string> inputValues;  
     std::vector<std::string> *validValues = new std::vector<std::string> (this->columns->size(), ""); 
     int firstBracketStart = line.find('('); 
     int firstBracketEnd = line.find(')'); 
@@ -217,7 +218,7 @@ void Interface::insert(std::string line, BTree<Interface::date_time> *btree)
             if(columns->operator[](token) == 0) {
                 havePrimaryKey = true; 
             }
-            validIndices[columns->operator[](token)] = 1; 
+            validIndices.push_back(token); 
         } else {
             std::cout << "invalid column name: " << token << std::endl; 
             return; 
@@ -229,7 +230,7 @@ void Interface::insert(std::string line, BTree<Interface::date_time> *btree)
         if(columns->operator[](token) == 0) {
             havePrimaryKey = true; 
         }
-        validIndices[columns->operator[](token)] = 1; 
+        validIndices.push_back(token); 
     } else {
         std::cout << "invalid column name: " << token << std::endl; 
         return; 
@@ -266,28 +267,17 @@ void Interface::insert(std::string line, BTree<Interface::date_time> *btree)
     while((pos = chosenValues.find(',', last)) != std::string::npos)
     {
         token = chosenValues.substr(last, pos - last); 
-
-        int i = 0; 
-        bool updateValue = false; 
-        while(i < validIndices.size() && !updateValue)
-        {
-            if(validIndices[i] == 1)
-            {
-                validIndices[i] = 0; 
-                validValues->operator[](i) = token; 
-                updateValue = true;                 
-            }
-        }
+        inputValues.push_back(token); 
         last = pos + 2; 
     }   
     token = chosenValues.substr(last, pos - last); 
-    int i = 0; 
-    while(i < validIndices.size()) {
-        if(validIndices[i] == 1){
-            validValues->operator[](i) = token; 
-            validIndices[i] = 0; 
-        }
-        i++; 
+    inputValues.push_back(token);
+
+
+    for(int i = 0; i < inputValues.size(); i++)
+    {
+        int index = columns->operator[](validIndices[i]); 
+        validValues->operator[](index) = inputValues[i]; 
     }
 
     // now have to transform the data into the correct format
@@ -327,6 +317,7 @@ void Interface::remove(std::string line, BTree<Interface::date_time> *btree)
 
 void Interface::printSelect(std::vector<std::string> columns, std::vector<std::vector<std::string>> values) 
 {
+
     TextTable t( '-', '|', '+' );
     // adding the header rows
     auto columnIt = columns.begin(); 

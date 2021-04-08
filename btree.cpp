@@ -181,8 +181,6 @@ BNode<T>* BTree<T>::getNode(T key)
         }
         
         if( i < curr->keys->size() && compare(key, curr->keys->at(i)->key) == 0 ) {
-            curr->print();
-            std::cout << "returning";
             return curr;
         }
 
@@ -310,9 +308,6 @@ void BTree<T>::deletion(BNode<T> *curr, T k) {
     } 
     else {
         if (curr->children->size()==0) {
-            std::cout << "The key "; 
-            this->printKey(k); 
-            std::cout << " is does not exist in the tree\n";
             return;
         }
     
