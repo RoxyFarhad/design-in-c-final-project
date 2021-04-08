@@ -3,32 +3,59 @@
 #include <stdio.h>
 #include <iostream>
 
-using namespace std;
+// using namespace std;
 
 int compareInt(int a, int b) { 
     return a - b; 
 };
 
-void printKey(int key) { cout << key; };
+void printKey(int key) { std::cout << key; };
 
 int main() {
     int m = 3;
     BTree<int> btree(m, &compareInt, &printKey);
 
-    for(int i = 1; i < 16; i++)
+    for(int i = 1; i < 20; i++)
     {
         btree.insert(i);
 
     }
-    for(int i = 1; i < 16; i++)
-    {
-        cout << i << endl;
-        btree.traverse();
-        cout << i << endl;
-        btree.deletion(i);
-        // btree.traverse();
 
-    }
+    // for(int i = 1; i < 3; i++)
+    // {
+    //     BNode<int> *curr = btree.getNode(i); 
+    //     btree.deletion(curr, i);
+    //     btree.traverse();
+    // }
+
+    BNode<int> *curr = btree.getNode(12); 
+    btree.deletion(curr, 12);
+    btree.traverse();
+    
+    
+
+    // std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+    // for(int i = 1; i < 1100000; i++)
+    // {
+    //     try{
+    //         btree.deletion(i);
+    //     }
+    //     catch (std::exception& e)
+    //     {
+    //         std::cerr << "Exception caught : " << e.what() << std::endl;
+    //     }
+    //     // cout << i << endl;
+    //     // btree.traverse();
+    //     // cout << i << endl;
+
+    //     // btree.traverse();
+
+    // }
+    // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now(); 
+    // std::chrono::duration<float, std::milli> time_span = end - start;
+    // std::cout << time_span.count();
+
+    // btree.remove(12);
 
     // for(int i = 100; i > 50; i--)
     // {
