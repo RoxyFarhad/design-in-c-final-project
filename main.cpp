@@ -15,21 +15,43 @@ int main() {
     int m = 3;
     BTree<int> btree(m, &compareInt, &printKey);
 
-    for(int i = 1; i < 200; i++)
+    for(int i = 1; i < 16; i++)
     {
         btree.insert(i);
 
     }
-
-    btree.traverse();
-    for(int i = 1; i < 200; i++)
+    for(int i = 1; i < 16; i++)
     {
-        btree.search(i);   
+        cout << i << endl;
+        btree.remove(i);
+        // btree.traverse();
+
     }
 
-    btree.remove(135);
+    // for(int i = 100; i > 50; i--)
+    // {
+    //     cout << i << endl;
+    //     btree.remove(i);
+    //     btree.traverse();
+    // }
 
-    btree.traverse();
+
+
+    // btree.traverse();
+    // for(int i = 1; i < 20; i++)
+    // {
+    //     btree.search(i);   
+    // }
+
+    // btree.remove(6);
+    // btree.traverse();
+    // btree.remove(15);
+    // btree.remove(88);
+    // cout << "27 NOW" <<endl;
+    // cout << " " << endl;
+    // btree.remove(27);
+
+    // btree.traverse();
 
 
     
