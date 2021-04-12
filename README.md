@@ -1,4 +1,15 @@
+## B-Tree Container
+
+This b-tree container in C++ follows the STL guidelines for associative containers. The goal of this project is to measure the effiency of our b-tree with STL other associative containers, map and set, in order to gain a better understanding of why b-trees are universally used in database management systems. The project includes a SQL interface connected to a memory based databased that reads data csv files. 
+
+This is a final project created for the Spring 2021 COMS 4995 Design Using C++ course with Professor Bjarne Stroustrup.
+
+Roxy Farhad \
+Carrie Hay Kellar \
+Serena Killion 
+
 ## Table of contents
+  - [B-tree Container](#b-tree-container)
   - [Table of contents](#table-of-contents)
   - [Design Manual](#design-manual)
   - [Design Document](#design-document)
